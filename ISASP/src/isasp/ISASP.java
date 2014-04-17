@@ -17,7 +17,7 @@ public class ISASP {
      */
     public static void main(String[] args) {
 
-       System.out.println("Gerco THE RULER OF THEM ALL!");
+       System.out.println("Peter THE RULER OF THEM ALL!");
        System.out.println("ME THE RULER OF THEM ALL!");
       
     }
