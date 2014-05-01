@@ -42,6 +42,18 @@ public class Block {
         this.Siblings = Siblings;
     }
       
+    public void AddParents(ArrayList<Block> block){
+        for(int i = 0; i < block.size(); i++){
+            this.Parents.add(block.get(i));
+        }
+    }    
+      
+    public void AddSiblings(ArrayList<Block> block){
+        for(int i = 0; i < block.size(); i++){
+            this.Siblings.add(block.get(i));
+        }
+    }    
+      
     public void AddParent(Block block){
         this.Parents.add(block);
     }    
