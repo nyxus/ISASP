@@ -5,11 +5,24 @@
  */
 
 package isasp;
+import java.util.ArrayList;
 
 /**
  *
  * @author Gerco
  */
-public class Chromosome {
+public class Chromosome <B> {
+    private ArrayList<B> Sequence = new ArrayList<B>();
+    private int ID;
+    
+    public void AddBlockToSequence( B newBlock){
+       this.Sequence.add(newBlock);
+    }  
+    
+    public ArrayList<B> GetSelection(int Min,int Max){
+        
+    }
+    
+    
     
 }
