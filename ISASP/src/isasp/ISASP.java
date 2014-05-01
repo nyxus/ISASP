@@ -16,7 +16,8 @@ public class ISASP {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+       Block asd = new Block(2, 1, 2, 3, 4);
        
-    }
-    
+       asd.PrintBlock("+");
+    }    
 }
