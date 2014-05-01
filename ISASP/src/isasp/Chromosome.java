@@ -20,7 +20,11 @@ public class Chromosome <B> {
     }  
     
     public ArrayList<B> GetSelection(int Min,int Max){
-        
+        ArrayList<B> selection = new ArrayList<B>();
+        for (int i = Min; i < Max ; i++) {
+            selection.get(i); 
+        }
+        return selection;
     }
     
     
