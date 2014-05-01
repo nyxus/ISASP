@@ -12,11 +12,19 @@ import java.util.ArrayList;
  * @author Gerco
  */
 public class Chromosome {
-    private ArrayList<Block> Sequence = new ArrayList<Block>();
-    private int ID;
+    private ArrayList<Block> sequence = new ArrayList<Block>();
+    private int id;
+    
+    public Chromosome(int ID){
+        this.id = ID;
+    }
+    public Chromosome(int ID, ArrayList<Block> blocks){
+        this.id = ID;
+        this.sequence = blocks;
+    }
     
     public void AddBlockToSequence( Block newBlock){
-       this.Sequence.add(newBlock);
+       this.sequence.add(newBlock);
     }  
     
     public ArrayList<Block> GetSelection(int Min,int Max){
@@ -27,20 +35,27 @@ public class Chromosome {
         return selection;
     }
     
-    public void PrintChromosome(){
-        this.PrintChromosome(",");
+    public String ToStringChromosome(){
+        return this.ToStringChromosome(",");
     }
     
-    public String PrintChromosome(String devider){
+    public String ToStringChromosome(String devider){
         String output = new String(); 
-
-        int size = this.Sequence.size();
-        for (int i = 0; i < Sequence.size(); i++) { 
-            output += this.Sequence.get(i).getID();
+        int size = this.sequence.size();
+        for (int i = 0; i < sequence.size(); i++) { 
+            output += this.sequence.get(i).getID();
             if (--size != 0) {
-               output += devider + " ";
+               output += devider;
             }
         }
         return output; 
     } 
+    
+    public Block GetBlocBykIndex(int index){
+        return this.sequence.get(index);
+    }
+    
+    public void AddBlockArrayToSequence(ArrayList<Block> Blocks){
+        this.sequence.addAll(Blocks);
+    }
 }
