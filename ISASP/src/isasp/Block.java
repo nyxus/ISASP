@@ -21,6 +21,17 @@ public class Block {
     public ArrayList<Block> Parents;
     public ArrayList<Block> Siblings;
     
+
+    public Block(int ID, int MinX, int MaxX, int MinY, int MaxY, ArrayList<Block> Parents, ArrayList<Block> Siblings) {
+        this.ID = ID;
+        this.MinX = MinX;
+        this.MaxX = MaxX;
+        this.MinY = MinY;
+        this.MaxY = MaxY;
+        this.Parents = Parents;
+        this.Siblings = Siblings;
+    }
+      
     public void AddParent(Block block){
         this.Parents.add(block);
     }    
