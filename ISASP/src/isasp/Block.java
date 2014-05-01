@@ -8,15 +8,8 @@ package isasp;
 
 /**
  *
- * @author LAPTOPPT
+ * @author Gerco
  */
-public class ISASP {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-       
-    }
+public class Block {
     
 }
