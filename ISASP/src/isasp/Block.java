@@ -13,13 +13,13 @@ import java.util.ArrayList;
  * @author Gerco en Peter
  */
 public class Block {
-    public int ID;
-    public int MinX;
-    public int MaxX;
-    public int MinY;
-    public int MaxY;
-    public ArrayList<Block> Parents;
-    public ArrayList<Block> Siblings;
+    private int ID;
+    private int MinX;
+    private int MaxX;
+    private int MinY;
+    private int MaxY;
+    private ArrayList<Block> Parents;
+    private ArrayList<Block> Siblings;
     
     public Block(int ID, int MinX, int MaxX, int MinY, int MaxY) {
         this.ID = ID;
@@ -64,5 +64,61 @@ public class Block {
     
     public void PrintBlock(String separator){
         System.out.println(ID + separator + MinX + separator + MaxX + separator + MinY + separator + MaxY + separator + Parents.toString() + separator + Siblings.toString());
+    }
+    
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int getMinX() {
+        return MinX;
+    }
+
+    public void setMinX(int MinX) {
+        this.MinX = MinX;
+    }
+
+    public int getMaxX() {
+        return MaxX;
+    }
+
+    public void setMaxX(int MaxX) {
+        this.MaxX = MaxX;
+    }
+
+    public int getMinY() {
+        return MinY;
+    }
+
+    public void setMinY(int MinY) {
+        this.MinY = MinY;
+    }
+
+    public int getMaxY() {
+        return MaxY;
+    }
+
+    public void setMaxY(int MaxY) {
+        this.MaxY = MaxY;
+    }
+
+    public ArrayList<Block> getParents() {
+        return Parents;
+    }
+
+    public void setParents(ArrayList<Block> Parents) {
+        this.Parents = Parents;
+    }
+
+    public ArrayList<Block> getSiblings() {
+        return Siblings;
+    }
+
+    public void setSiblings(ArrayList<Block> Siblings) {
+        this.Siblings = Siblings;
     }
 }
