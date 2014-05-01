@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Gerco
+ * @author Gerco en Peter
  */
 public class Block {
     public int ID;
