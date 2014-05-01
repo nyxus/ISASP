@@ -27,6 +27,9 @@ public class Block {
         this.MaxX = MaxX;
         this.MinY = MinY;
         this.MaxY = MaxY;
+
+        Parents = new ArrayList<>();
+        Siblings = new ArrayList<>();
     }
     
     public Block(int ID, int MinX, int MaxX, int MinY, int MaxY, ArrayList<Block> Parents, ArrayList<Block> Siblings) {
