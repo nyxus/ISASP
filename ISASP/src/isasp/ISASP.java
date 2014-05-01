@@ -18,6 +18,6 @@ public class ISASP {
     public static void main(String[] args) {
        Block asd = new Block(2, 1, 2, 3, 4);
        
-       asd.PrintBlock("+");
+       asd.PrintBlock(" SATAN ");
     }    
 }
