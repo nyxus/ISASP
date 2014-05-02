@@ -5,7 +5,8 @@
  */
 
 package isasp;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 /**
  *
  * @author LAPTOPPT
@@ -16,8 +17,20 @@ public class ISASP {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       Block asd = new Block(2, 1, 2, 3, 4);
+       Block asd1 = new Block(1, 1, 2, 3, 4);
+       Block asd2 = new Block(2, 1, 2, 3, 4);
+       Block asd3 = new Block(3, 1, 2, 3, 4);
+       Block asd4 = new Block(4, 1, 2, 3, 4);
        
-       asd.PrintBlock(" SATAN ");
+       
+      Block[] blocks = {asd1, asd2, asd3, asd4 };   
+       Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
+       
+        System.out.println(Chms.ToStringChromosome(":"));
+        
+        Marian problem = new Marian("C:\\problemen\\probleemMet5", 5);
+        
+       
+      // asd.PrintBlock(" SATAN ");
     }    
 }
