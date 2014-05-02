@@ -65,6 +65,27 @@ public class Block {
     public void PrintBlock(String separator){
         System.out.println(ID + separator + MinX + separator + MaxX + separator + MinY + separator + MaxY + separator + Parents.toString() + separator + Siblings.toString());
     }
+    public String ToString(String separator){
+       String returnString = new String();
+       
+       returnString  = ID + separator;
+       returnString  += MaxX + separator;
+       returnString  += MinX + separator;
+       returnString  += MaxY + separator;
+       returnString  += MinY + separator;
+       returnString  += "[";
+        for (Block block : Parents) {
+            returnString  += block.getID() + separator;
+        }
+       returnString  += "]"+ separator;;
+       returnString  += "[";
+        for (Block block : Siblings) {
+            returnString  += block.getID() + separator;
+        }
+       returnString  += "]"+ separator;;
+       
+       return returnString;
+    }
     
     public int getID() {
         return ID;
