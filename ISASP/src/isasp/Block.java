@@ -21,6 +21,9 @@ public class Block {
     private ArrayList<Block> Parents;
     private ArrayList<Block> Siblings;
     
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    
     public Block(int ID, int MinX, int MaxX, int MinY, int MaxY) {
         this.ID = ID;
         this.MinX = MinX;
@@ -87,6 +90,27 @@ public class Block {
        return returnString;
     }
     
+    public void setSibling(int side, Block sibling){
+        switch(side){
+            case LEFT:
+                this.Siblings.set(LEFT, sibling);
+                break;
+            case RIGHT:
+                this.Siblings.set(RIGHT, sibling);
+                break; 
+        }
+    }
+    
+    public Block getSibling(int side){
+        switch(side){
+            case LEFT:
+                return this.Siblings.get(LEFT);
+            case RIGHT:
+                return this.Siblings.get(RIGHT);
+        }
+        return null;
+    }
+
     public int getID() {
         return ID;
     }
