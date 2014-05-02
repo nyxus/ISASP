@@ -7,6 +7,7 @@
 package isasp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Block {
     private int MinY;
     private int MaxY;
     private ArrayList<Block> Parents;
-    private ArrayList<Block> Siblings;
+    private Block[] Siblings;
     
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
@@ -32,10 +33,10 @@ public class Block {
         this.MaxY = MaxY;
 
         Parents = new ArrayList<>();
-        Siblings = new ArrayList<>();
+        Siblings = new Block[2] ;
     }
     
-    public Block(int ID, int MinX, int MaxX, int MinY, int MaxY, ArrayList<Block> Parents, ArrayList<Block> Siblings) {
+    public Block(int ID, int MinX, int MaxX, int MinY, int MaxY, ArrayList<Block> Parents, Block[] Siblings) {
         this.ID = ID;
         this.MinX = MinX;
         this.MaxX = MaxX;
@@ -51,19 +52,12 @@ public class Block {
         }
     }    
       
-    public void AddSiblings(ArrayList<Block> block){
-        for(int i = 0; i < block.size(); i++){
-            this.Siblings.add(block.get(i));
-        }
-    }    
+    
       
     public void AddParent(Block block){
         this.Parents.add(block);
     }    
-    
-    public void AddSibling(Block block){
-        this.Parents.add(block);
-    }    
+     
     
     public void PrintBlock(String separator){
         System.out.println(ID + separator + MinX + separator + MaxX + separator + MinY + separator + MaxY + separator + Parents.toString() + separator + Siblings.toString());
@@ -90,27 +84,6 @@ public class Block {
        return returnString;
     }
     
-    public void setSibling(int side, Block sibling){
-        switch(side){
-            case LEFT:
-                this.Siblings.set(LEFT, sibling);
-                break;
-            case RIGHT:
-                this.Siblings.set(RIGHT, sibling);
-                break; 
-        }
-    }
-    
-    public Block getSibling(int side){
-        switch(side){
-            case LEFT:
-                return this.Siblings.get(LEFT);
-            case RIGHT:
-                return this.Siblings.get(RIGHT);
-        }
-        return null;
-    }
-
     public int getID() {
         return ID;
     }
@@ -159,11 +132,32 @@ public class Block {
         this.Parents = Parents;
     }
 
-    public ArrayList<Block> getSiblings() {
+    public Block[] getSiblings() {
         return Siblings;
     }
-
-    public void setSiblings(ArrayList<Block> Siblings) {
-        this.Siblings = Siblings;
+    
+    public void setSiblings(Block[] block){
+        this.Siblings = block;
+    } 
+    
+    public void setSibling(int side, Block sibling){
+        switch(side){
+            case LEFT:
+                this.Siblings[Block.LEFT] =  sibling;
+                break;
+            case RIGHT:
+                this.Siblings[Block.RIGHT] =  sibling;
+                break; 
+        }
+    }
+    
+    public Block getSibling(int side){
+        switch(side){
+            case LEFT:
+                return this.Siblings[Block.LEFT];
+            case RIGHT:
+                return this.Siblings[Block.RIGHT];
+        }
+        return null;
     }
 }
