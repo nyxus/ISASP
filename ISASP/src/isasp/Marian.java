@@ -18,26 +18,31 @@ import java.util.Arrays;
 public class Marian {
     private ArrayList<Chromosome> population;
     private Block floor = new Block(0, 1, 1, 0, 0);
-    private Integer[][] dependencyMatrix;
+    private ArrayList<Block> blockCollection = new ArrayList<Block>();
+    private Boolean[][] dependencyMatrix;
+    
     
     private Block[][] fysicalMatrix;
     
     public Marian(String file, int problemSize){
         floor = new Block(0, 0, problemSize, 0, 0);
         
-        this.fysicalMatrix = new Block[problemSize][problemSize];
+        this.fysicalMatrix = new Block[problemSize+1][problemSize];
+        
         
         // set floor into fyclicalMatrx at index
-        /*
+        
         for (int i = 0; i < problemSize; i++) {
             fysicalMatrix[0][i] = floor;
         }
-        */
+        blockCollection.add(floor);
+        
         ReadProblem(file);
+        convertToDependencyMatrix();
         System.out.println(ToStringFysicalMatrix());
+        System.out.println(ToStringBlockCollection());
         
     }
-    
     
     public void ReadProblem(String file){ 
         try {
@@ -52,6 +57,7 @@ public class Marian {
             //Lees bestand per regel
             while ((strLine = br.readLine()) != null) {
                 tempBlock = StringtoBlock(strLine);
+                blockCollection.add(tempBlock);
                 BlockIntoFysicalMatrix(tempBlock);
             }
             //Close the input stream
@@ -89,7 +95,7 @@ public class Marian {
     private void BlockIntoFysicalMatrix(Block block){
         for (int y = block.getMinY(); y <= block.getMaxY(); y++) {
             for (int x = block.getMinX(); x <= block.getMaxX(); x++) {
-                this.fysicalMatrix[y][x] = block;
+                this.fysicalMatrix[y+1][x] = block;
             }
         }
     }
@@ -108,6 +114,60 @@ public class Marian {
         return returnString;
     }
     
+    private void convertToDependencyMatrix(){
+        Block currentBlock, prevBlock, currentDepencency, prevDepencency;
+        prevDepencency = null;
+        prevBlock = fysicalMatrix[1][0]; // set fist prevous bock as the current fist block 
+        dependencyMatrix = new Boolean[blockCollection.size()][blockCollection.size()];
+        prevDepencency = blockCollection.get(0);
+        for (int y = 1; y < fysicalMatrix.length; y++) {
+            for (int x = 0; x < fysicalMatrix[y].length; x++) {
+                currentBlock = fysicalMatrix[y][x];
+                currentDepencency = fysicalMatrix[y-1][x];
+                
+                if(prevBlock != currentBlock){
+                    prevDepencency = null;
+                    if(prevBlock != null){
+                        prevBlock.setSibling(Block.RIGHT, currentBlock);
+                        currentBlock.setSibling(Block.LEFT, prevBlock);
+                    }
+                }
+                                
+                if(prevDepencency != currentDepencency && currentDepencency !=  currentBlock){
+                                        
+                    dependencyMatrix[currentBlock.getID()][currentDepencency.getID()] = true; // set depencency of the current block
+                    currentBlock.AddParent(currentDepencency);
+                }
+                
+                prevBlock = currentBlock;
+                prevDepencency = currentDepencency;
+            }
+            prevBlock = null;
+        }        
+    }
     
+    public String ToStringBlockCollection(){
+        String returnString = new String();
+        for(Block block : blockCollection) {
+            returnString += block.ToString(", ") + "\n";
+        }
+        return returnString;
+    }
     
+    public String ToStringDependencyMatrix(){
+        String returnString = new String();
+        
+        for (int y = 0; y < dependencyMatrix.length; y++) {
+            for (int x = 0; x < dependencyMatrix[y].length; x++) {
+                
+            }
+        }
+        
+        return returnString;
+        
+    }
 }
+    
+    
+    
+
