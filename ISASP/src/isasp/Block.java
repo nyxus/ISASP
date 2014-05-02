@@ -77,7 +77,9 @@ public class Block {
        returnString  += "]"+ separator;;
        returnString  += "[";
         for (Block block : Siblings) {
-            returnString  += block.getID() + separator;
+            if(block != null){
+                returnString  += block.getID() + separator;
+            }
         }
        returnString  += "]"+ separator;;
        
