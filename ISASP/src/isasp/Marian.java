@@ -195,6 +195,22 @@ public class Marian {
         return returnString;
         
     }
+    
+    public void guidedSearch(int populationSize){
+        Block[] stack = new Block[populationSize];
+        int popuationCount = 0;
+        
+        stack[0] = blockCollection.get(0); // add floor to start of stack
+        
+        while(populationSize > popuationCount){
+            Chromosome newChrom = new Chromosome(popuationCount);
+            
+            // get current from stack 
+            
+            newChrom.AddBlockToSequence(stack[0]);
+        }
+        
+    }
 }
     
     
