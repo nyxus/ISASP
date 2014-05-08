@@ -17,7 +17,9 @@ import java.util.Random;
  * @author Gerco
  */
 public class Marian {
-    private ArrayList<Chromosome> population;
+
+    
+    private ArrayList<Chromosome> population = new ArrayList<Chromosome>();
     private Block floor = new Block(0, 1, 1, 0, 0);
     private ArrayList<Block> blockCollection = new ArrayList<Block>();
     private Boolean[][] dependencyMatrix;
@@ -40,9 +42,9 @@ public class Marian {
         
         ReadProblem(ISASP.class.getResource(filename).getPath());
         convertToDependencyMatrix();
-        System.out.println(ToStringFysicalMatrix());
-        System.out.println(ToStringBlockCollection());
-        System.out.println(ToStringDependencyMatrix());
+        //System.out.println(ToStringFysicalMatrix());
+        //System.out.println(ToStringBlockCollection());
+        //System.out.println(ToStringDependencyMatrix());
         
     }
     
@@ -130,11 +132,12 @@ public class Marian {
     private void convertToDependencyMatrix(){
         Block currentBlock, prevBlock, currentDepencency, prevDepencency;
         prevDepencency = null;
-        prevBlock = fysicalMatrix[1][0]; // set fist prevous bock as the current fist block 
+        prevBlock = fysicalMatrix[0][0]; // set fist prevous bock as the current fist block 
         
         initializeDependencyMatrix(blockCollection.size(), false);
                 
         prevDepencency = blockCollection.get(0); // get floor
+        fysicalMatrix[1][0].AddParent(prevDepencency); // add the floor tu the rist current block
         for (int y = 1; y < fysicalMatrix.length; y++) {
             for (int x = 0; x < fysicalMatrix[y].length; x++) {
                 currentBlock = fysicalMatrix[y][x];
@@ -199,19 +202,16 @@ public class Marian {
     
     public void guidedSearch(int populationSize){
         Block currentBlock;
-        Block[] doneStack = new Block[populationSize];
-        ArrayList<Block> possibleStack = new ArrayList<>();
-        int randomNumber;
-        
+        int randomNumber;  
         int popuationCount = 0;
-        
-        possibleStack.add(floor); // add floor to start of stack
         
         while(populationSize > popuationCount){
             Chromosome newChrom = new Chromosome(popuationCount);
+            Block[] doneStack = new Block[blockCollection.size()];
+            ArrayList<Block> possibleStack = new ArrayList<>();
+            possibleStack.add(floor); // add floor to start of stack
             
-            while(possibleStack.size() > 0){
-                
+            while(possibleStack.size() > 0){                
                 Random random = new Random();
                 randomNumber = random.nextInt(possibleStack.size());
                 currentBlock = possibleStack.get(randomNumber);
@@ -219,7 +219,7 @@ public class Marian {
                 possibleStack.remove(currentBlock);
                 newChrom.AddBlockToSequence(currentBlock);
                 
-                
+                possibleStack.addAll(getPossibleNextBlocks(currentBlock, doneStack));
                 // get random from current stack
                 // add to done
                 // add to sequence 
@@ -231,8 +231,67 @@ public class Marian {
         }
         
     }
+    
+    private ArrayList<Block> getPossibleNextBlocks(Block currentBlock, Block[] doneStack){
+        ArrayList<Block> possibleBlocks = new ArrayList<>();
+        Block tempBlock;
+        for (int i = 0; i < blockCollection.size(); i++) {
+            if (dependencyMatrix[i][currentBlock.getID()]) {
+                tempBlock = blockCollection.get(i);
+                Boolean addBlock = true;
+                for (Block block : tempBlock.getParents()) {
+                    if (doneStack[block.getID()] == null) {
+                       addBlock = false;
+                       break;
+                    }
+                }
+                if(addBlock){
+                    possibleBlocks.add(tempBlock);
+                }
+            }
+                     
+        }
+        return possibleBlocks;
+    }
+    
+    public ArrayList<Chromosome> getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(ArrayList<Chromosome> population) {
+        this.population = population;
+    }
+
+    public Block getFloor() {
+        return floor;
+    }
+
+    public void setFloor(Block floor) {
+        this.floor = floor;
+    }
+
+    public ArrayList<Block> getBlockCollection() {
+        return blockCollection;
+    }
+
+    public void setBlockCollection(ArrayList<Block> blockCollection) {
+        this.blockCollection = blockCollection;
+    }
+
+    public Boolean[][] getDependencyMatrix() {
+        return dependencyMatrix;
+    }
+
+    public void setDependencyMatrix(Boolean[][] dependencyMatrix) {
+        this.dependencyMatrix = dependencyMatrix;
+    }
+
+    public Block[][] getFysicalMatrix() {
+        return fysicalMatrix;
+    }
+
+    public void setFysicalMatrix(Block[][] fysicalMatrix) {
+        this.fysicalMatrix = fysicalMatrix;
+    }
 }
-    
-    
-    
 

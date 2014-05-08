@@ -26,8 +26,13 @@ public class ISASP {
       Block[] blocks = {asd1, asd2, asd3, asd4 };   
        Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
        
-        System.out.println(Chms.ToStringChromosome(":"));
+        //System.out.println(Chms.ToStringChromosome(":"));
         
         Marian problem = new Marian("probleemMet5", 5);
+        problem.guidedSearch(5);
+        for (Chromosome Chromo : problem.getPopulation()) {
+            System.out.println(Chromo.ToString());
+        }
+                
     }    
 }

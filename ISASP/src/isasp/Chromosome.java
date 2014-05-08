@@ -35,12 +35,13 @@ public class Chromosome {
         return selection;
     }
     
-    public String ToStringChromosome(){
+    public String ToString(){
         return this.ToStringChromosome(",");
     }
     
     public String ToStringChromosome(String devider){
-        String output = new String(); 
+        String output = new String();
+        output = "id:" + this.id + "| ";
         int size = this.sequence.size();
         for (int i = 0; i < sequence.size(); i++) { 
             output += this.sequence.get(i).getID();
