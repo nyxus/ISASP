@@ -41,6 +41,7 @@ public class Marian {
         convertToDependencyMatrix();
         System.out.println(ToStringFysicalMatrix());
         System.out.println(ToStringBlockCollection());
+        System.out.println(ToStringDependencyMatrix());
         
     }
     
@@ -57,7 +58,7 @@ public class Marian {
             //Lees bestand per regel
             while ((strLine = br.readLine()) != null) {
                 tempBlock = StringtoBlock(strLine);
-                blockCollection.add(tempBlock);
+                blockCollection.add(tempBlock.getID(), tempBlock);
                 BlockIntoFysicalMatrix(tempBlock);
             }
             //Close the input stream
@@ -114,12 +115,25 @@ public class Marian {
         return returnString;
     }
     
+    private void initializeDependencyMatrix(int size, boolean default_val){
+        dependencyMatrix = new Boolean[size][size];
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                dependencyMatrix[i][j] = default_val;
+            }
+  
+        }
+    }
+    
     private void convertToDependencyMatrix(){
         Block currentBlock, prevBlock, currentDepencency, prevDepencency;
         prevDepencency = null;
         prevBlock = fysicalMatrix[1][0]; // set fist prevous bock as the current fist block 
-        dependencyMatrix = new Boolean[blockCollection.size()][blockCollection.size()];
-        prevDepencency = blockCollection.get(0);
+        
+        initializeDependencyMatrix(blockCollection.size(), false);
+                
+        prevDepencency = blockCollection.get(0); // get floor
         for (int y = 1; y < fysicalMatrix.length; y++) {
             for (int x = 0; x < fysicalMatrix[y].length; x++) {
                 currentBlock = fysicalMatrix[y][x];
@@ -156,11 +170,26 @@ public class Marian {
     
     public String ToStringDependencyMatrix(){
         String returnString = new String();
-        
+        returnString = "   /";
+        for(int i = 0; i < dependencyMatrix[0].length; i++) {
+            returnString += i + " ";
+        }
+        returnString += "\n";
         for (int y = 0; y < dependencyMatrix.length; y++) {
-            for (int x = 0; x < dependencyMatrix[y].length; x++) {
-                
+            if(y < 10){
+               returnString += " " + y + "| "; 
+            }else{
+                returnString += y + "| ";
             }
+            for (int x = 0; x < dependencyMatrix[y].length; x++) {
+                if(dependencyMatrix[y][x]){
+                    returnString += "1 ";
+                    
+                }else{
+                    returnString += "0 ";
+                }
+            }
+             returnString +="\n";
         }
         
         return returnString;
