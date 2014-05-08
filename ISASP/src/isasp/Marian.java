@@ -24,7 +24,7 @@ public class Marian {
     
     private Block[][] fysicalMatrix;
     
-    public Marian(String file, int problemSize){
+    public Marian(String filename, int problemSize){
         floor = new Block(0, 0, problemSize, 0, 0);
         
         this.fysicalMatrix = new Block[problemSize+1][problemSize];
@@ -37,7 +37,7 @@ public class Marian {
         }
         blockCollection.add(floor);
         
-        ReadProblem(file);
+        ReadProblem(ISASP.class.getResource(filename).getPath());
         convertToDependencyMatrix();
         System.out.println(ToStringFysicalMatrix());
         System.out.println(ToStringBlockCollection());
