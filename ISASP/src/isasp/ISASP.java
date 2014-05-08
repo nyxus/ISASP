@@ -28,9 +28,6 @@ public class ISASP {
        
         System.out.println(Chms.ToStringChromosome(":"));
         
-        Marian problem = new Marian("C:\\problemen\\probleemMet5", 5);
-        
-       
-      // asd.PrintBlock(" SATAN ");
+        Marian problem = new Marian("probelem", 5);
     }    
 }
