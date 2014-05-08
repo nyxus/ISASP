@@ -28,6 +28,6 @@ public class ISASP {
        
         System.out.println(Chms.ToStringChromosome(":"));
         
-        Marian problem = new Marian("probelem", 5);
+        Marian problem = new Marian("probleemMet5", 5);
     }    
 }
