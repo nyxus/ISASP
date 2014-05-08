@@ -198,17 +198,36 @@ public class Marian {
     }
     
     public void guidedSearch(int populationSize){
-        Block[] stack = new Block[populationSize];
+        Block currentBlock;
+        Block[] doneStack = new Block[populationSize];
+        ArrayList<Block> possibleStack = new ArrayList<>();
+        int randomNumber;
+        
         int popuationCount = 0;
         
-        stack[0] = blockCollection.get(0); // add floor to start of stack
+        possibleStack.add(floor); // add floor to start of stack
         
         while(populationSize > popuationCount){
             Chromosome newChrom = new Chromosome(popuationCount);
             
-            // get current from stack 
-            
-            newChrom.AddBlockToSequence(stack[0]);
+            while(possibleStack.size() > 0){
+                
+                Random random = new Random();
+                randomNumber = random.nextInt(possibleStack.size());
+                currentBlock = possibleStack.get(randomNumber);
+                doneStack[currentBlock.getID()] = currentBlock;
+                possibleStack.remove(currentBlock);
+                newChrom.AddBlockToSequence(currentBlock);
+                
+                
+                // get random from current stack
+                // add to done
+                // add to sequence 
+                // search for new possible 
+                
+            }
+            population.add(newChrom);
+            popuationCount++; 
         }
         
     }
