@@ -24,7 +24,6 @@ public class Marian {
     private ArrayList<Block> blockCollection = new ArrayList<Block>();
     private Boolean[][] dependencyMatrix;
     
-    
     private Block[][] fysicalMatrix;
     
     public Marian(String filename, int problemSize){
@@ -252,6 +251,25 @@ public class Marian {
                      
         }
         return possibleBlocks;
+    }
+    
+    public double calculateFitness(Chromosome chromosome, int base){
+        double fitness = 0;
+        int totalCount = 0 ;
+        int currentPos = 0;
+        Block prevBlock = floor;
+       // Block currentBlock;
+        
+        for(Block currentBlock : chromosome.getSequence()) {
+           if(currentBlock != floor){
+              totalCount += Math.abs(currentBlock.getID()- prevBlock.getID()); 
+           }
+           
+           prevBlock = currentBlock;
+           
+        }
+        fitness = (float) totalCount / base ;
+        return 1 - fitness;
     }
     
     public ArrayList<Chromosome> getPopulation() {
