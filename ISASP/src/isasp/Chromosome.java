@@ -12,8 +12,10 @@ import java.util.ArrayList;
  * @author Gerco
  */
 public class Chromosome {
+
     private ArrayList<Block> sequence = new ArrayList<Block>();
     private int id;
+    private double fitness; 
     
     public Chromosome(int ID){
         this.id = ID;
@@ -50,7 +52,15 @@ public class Chromosome {
             }
         }
         return output; 
-    } 
+    }
+    
+    public ArrayList<Block> getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(ArrayList<Block> sequence) {
+        this.sequence = sequence;
+    }
     
     public Block GetBlocBykIndex(int index){
         return this.sequence.get(index);
@@ -58,5 +68,13 @@ public class Chromosome {
     
     public void AddBlockArrayToSequence(ArrayList<Block> Blocks){
         this.sequence.addAll(Blocks);
+    }
+    
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
     }
 }

@@ -29,9 +29,12 @@ public class ISASP {
         //System.out.println(Chms.ToStringChromosome(":"));
         
         Marian problem = new Marian("probleemMet5", 5);
-        problem.guidedSearch(5);
+        problem.guidedSearch(100);
+        int base;
+        
+        base = (problem.getBlockCollection().size()/2) * (1 + problem.getBlockCollection().size());
         for (Chromosome Chromo : problem.getPopulation()) {
-            System.out.println(Chromo.ToString());
+            System.out.println("Fitness: " + problem.calculateFitness(Chromo, base));
         }
                 
     }    
