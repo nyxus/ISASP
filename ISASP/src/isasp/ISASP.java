@@ -32,8 +32,6 @@ public class ISASP {
         problem.guidedSearch(100);
         int base;
         
-        System.out.println(problem.ToStringFysicalMatrix());
-        
         base = (problem.getBlockCollection().size()/2) * (1 + problem.getBlockCollection().size());
 //        for (Chromosome Chromo : problem.getPopulation()) {
 //            System.out.println("Fitness: " + problem.calculateFitness(Chromo, base));

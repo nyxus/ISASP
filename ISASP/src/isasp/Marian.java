@@ -9,12 +9,19 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Marian {
-
-    private ArrayList<Chromosome> population = new ArrayList<Chromosome>();
+    
     private Block floor = new Block(0, 1, 1, 0, 0);
+    
+    //Population is een ArrayList van Chromosomen. 
+    private ArrayList<Chromosome> population = new ArrayList<Chromosome>();
+        
+    //BlockCollection bevat alle blocks van een probleem.
     private ArrayList<Block> blockCollection = new ArrayList<Block>();
+    
+    //DependencyMatrix is een array van booleans welke beschrijft welke blokken benodigd zijn om een desbetreffende block te plaatsen.
     private Boolean[][] dependencyMatrix;
-
+    
+    //FysicalMatrix is een array met daarin de blokken hoe deze daadwerkelijk opgestapeld zijn.
     private Block[][] fysicalMatrix;
 
     public Marian(String filename, int problemSize) {
@@ -26,13 +33,14 @@ public class Marian {
         for (int i = 0; i < problemSize; i++) {
             fysicalMatrix[0][i] = floor;
         }
+        
         blockCollection.add(floor);
 
         ReadProblem(ISASP.class.getResource(filename).getPath());
         convertToDependencyMatrix();
-        //System.out.println(ToStringFysicalMatrix());
-        //System.out.println(ToStringBlockCollection());
-        //System.out.println(ToStringDependencyMatrix());
+        System.out.println("Fysical Matrix -\n"+ToStringFysicalMatrix());
+        System.out.println("Block Collection -\n"+ToStringBlockCollection());
+        System.out.println("Dependency Matrix -\n"+ToStringDependencyMatrix());
 
     }
 
@@ -162,7 +170,7 @@ public class Marian {
     private void convertToDependencyMatrix() {
         Block currentBlock, prevBlock, currentDepencency, prevDepencency;
         prevDepencency = null;
-        prevBlock = fysicalMatrix[0][0]; // set fist prevous bock as the current fist block 
+        prevBlock = fysicalMatrix[0][0]; // set first previous block as the current first block 
 
         initializeDependencyMatrix(blockCollection.size(), false);
 
@@ -195,9 +203,9 @@ public class Marian {
     }
 
     //ToStringBlockCollection
-    //  Beschrijving: ToStringBlockCollection
-    //  Input: 
-    //  Output:
+    //  Beschrijving: ToStringBlockCollection zet alle blokken netjes in een lijst om zo duidelijk te maken welke blokken er zijn.
+    //  Input: -
+    //  Output: Een string met daarin alle blokken.
     //  Gemaakt door: Gerco Versloot
     public String ToStringBlockCollection() {
         String returnString = new String();
@@ -208,9 +216,9 @@ public class Marian {
     }
 
     //ToStringDependencyMatrix
-    //  Beschrijving: ToStringDependencyMatrix
-    //  Input: 
-    //  Output:
+    //  Beschrijving: ToStringDependencyMatrix zet de gehele DependencyMatrix in een nette string zodat deze grafisch weer te geven is.
+    //  Input: -
+    //  Output: Een String met daarin de DependencyMatrix.
     //  Gemaakt door: Gerco Versloot
     public String ToStringDependencyMatrix() {
         String returnString = new String();
