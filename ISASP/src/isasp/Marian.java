@@ -5,18 +5,16 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Marian {
-    
     private Block floor = new Block(0, 1, 1, 0, 0);
     
     //Population is een ArrayList van Chromosomen. 
-    private ArrayList<Chromosome> population = new ArrayList<Chromosome>();
+    private ArrayList<Chromosome> population = new ArrayList<>();
         
     //BlockCollection bevat alle blocks van een probleem.
-    private ArrayList<Block> blockCollection = new ArrayList<Block>();
+    private ArrayList<Block> blockCollection = new ArrayList<>();
     
     //DependencyMatrix is een array van booleans welke beschrijft welke blokken benodigd zijn om een desbetreffende block te plaatsen.
     private Boolean[][] dependencyMatrix;
@@ -24,7 +22,11 @@ public class Marian {
     //FysicalMatrix is een array met daarin de blokken hoe deze daadwerkelijk opgestapeld zijn.
     private Block[][] fysicalMatrix;
 
-    public Marian(String filename, int problemSize) {
+    public Marian(String filename) {
+        int problemSize = getProblemSize(filename);
+        
+        System.out.println("ProblemSize = "+ problemSize);
+        
         floor = new Block(0, 0, problemSize, 0, 0);
 
         this.fysicalMatrix = new Block[problemSize + 1][problemSize];
@@ -35,24 +37,65 @@ public class Marian {
         }
         
         blockCollection.add(floor);
-
-        ReadProblem(ISASP.class.getResource(filename).getPath());
+        
+        ReadProblem(filename);
+        
         convertToDependencyMatrix();
-        System.out.println("Fysical Matrix -\n"+ToStringFysicalMatrix());
-        System.out.println("Block Collection -\n"+ToStringBlockCollection());
-        System.out.println("Dependency Matrix -\n"+ToStringDependencyMatrix());
+        System.out.println("- Fysical Matrix -\n"+ToStringFysicalMatrix());
+        System.out.println("- Block Collection -\n"+ToStringBlockCollection());
+        System.out.println("- Dependency Matrix -\n"+ToStringDependencyMatrix());
 
+    }
+    
+    //getProblemSize
+    //  Beschrijving: getProblemSize leest het bestand in het opgegeven pad en berekend hieruit de groote van het probleem.
+    //  Input: De locatie van het uit te lezen bestand.
+    //  Output: problemSize als een Integer.
+    //  Gemaakt door: Peter Tielbeek.
+    public int getProblemSize(String filename){
+        int problemSize = 0;
+        int compare = 0;
+        String splitarray[];
+        
+        try {
+            //Open bestand op de opgegeven locatie
+            FileInputStream fstream = new FileInputStream(ISASP.class.getResource(filename).getPath());
+
+            // Get the object of DataInputStream
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            //Lees bestand per regel
+            while ((strLine = br.readLine()) != null) {
+                splitarray = strLine.split(" ");
+                
+                compare = Integer.parseInt(splitarray[2]);
+                
+                if(compare > problemSize){
+                    problemSize = compare;
+                }
+            }
+            
+            //Close the input stream
+            in.close();
+            return problemSize+1;
+        } catch (Exception e) {
+            //Catch exception if any
+            System.out.println("Error: " + e.getMessage());
+            return 0;
+        }
     }
 
     //Readproblem 
     //  Beschrijving: ReadProblem leest het bestand in het opgegeven pad en maakt er een fysieke matrix van blokken van.
     //  Input: De locatie van het uit te lezen bestand.
-    //  Output: -
+    //  Output: problemSize
     //  Gemaakt door: Gerco Versloot.
-    public void ReadProblem(String file) {
+    public void ReadProblem(String file) {  
         try {
             //Open bestand op de opgegeven locatie
-            FileInputStream fstream = new FileInputStream(file);
+            FileInputStream fstream = new FileInputStream(ISASP.class.getResource(file).getPath());
 
             // Get the object of DataInputStream
             DataInputStream in = new DataInputStream(fstream);
@@ -63,11 +106,14 @@ public class Marian {
             //Lees bestand per regel
             while ((strLine = br.readLine()) != null) {
                 tempBlock = StringToBlock(strLine);
+                            
                 blockCollection.add(tempBlock.getID(), tempBlock);
                 BlockIntoFysicalMatrix(tempBlock);
             }
+            
             //Close the input stream
             in.close();
+            
         } catch (Exception e) {
             //Catch exception if any
             System.err.println("Error: " + e.getMessage());
@@ -175,7 +221,7 @@ public class Marian {
         initializeDependencyMatrix(blockCollection.size(), false);
 
         prevDepencency = blockCollection.get(0); // get floor
-        fysicalMatrix[1][0].AddParent(prevDepencency); // add the floor tu the rist current block
+        fysicalMatrix[1][0].AddParent(prevDepencency); // add the floor to the first current block
         for (int y = 1; y < fysicalMatrix.length; y++) {
             for (int x = 0; x < fysicalMatrix[y].length; x++) {
                 currentBlock = fysicalMatrix[y][x];
@@ -320,9 +366,7 @@ public class Marian {
     public double calculateFitness(Chromosome chromosome, int base) {
         double fitness = 0;
         int totalCount = 0;
-        int currentPos = 0;
         Block prevBlock = floor;
-       // Block currentBlock;
 
         for (Block currentBlock : chromosome.getSequence()) {
             if (currentBlock != floor) {

@@ -24,11 +24,11 @@ public class ISASP {
        
        
       Block[] blocks = {asd1, asd2, asd3, asd4 };   
-       Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
+    Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
        
         //System.out.println(Chms.ToStringChromosome(":"));
         
-        Marian problem = new Marian("probleemMet5", 5);
+        Marian problem = new Marian("probleemMet5");
         problem.guidedSearch(100);
         int base;
         
