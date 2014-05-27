@@ -11,7 +11,7 @@ public class Marian {
     private Block floor = new Block(0, 1, 1, 0, 0);
     
     //Population is een ArrayList van Chromosomen. 
-    private ArrayList<Chromosome> population = new ArrayList<>();
+    
         
     //BlockCollection bevat alle blocks van een probleem.
     private ArrayList<Block> blockCollection = new ArrayList<>();
@@ -41,9 +41,9 @@ public class Marian {
         ReadProblem(filename);
         
         convertToDependencyMatrix();
-        System.out.println("- Fysical Matrix -\n"+ToStringFysicalMatrix());
-        System.out.println("- Block Collection -\n"+ToStringBlockCollection());
-        System.out.println("- Dependency Matrix -\n"+ToStringDependencyMatrix());
+       // System.out.println("- Fysical Matrix -\n"+ToStringFysicalMatrix());
+        //System.out.println("- Block Collection -\n"+ToStringBlockCollection());
+       // System.out.println("- Dependency Matrix -\n"+ToStringDependencyMatrix());
 
     }
     
@@ -299,7 +299,8 @@ public class Marian {
     //  Input: 
     //  Output:
     //  Gemaakt door: Gerco Versloot
-    public void guidedSearch(int populationSize) {
+    public Population guidedSearch(int populationSize) {
+        Population pop = new Population();
         Block currentBlock;
         int randomNumber;
         int popuationCount = 0;
@@ -325,10 +326,10 @@ public class Marian {
                 // search for new possible 
 
             }
-            population.add(newChrom);
+            pop.addChromosome(newChrom);
             popuationCount++;
         }
-
+        return pop;
     }
 
     //getPossibleNextBlocks
@@ -357,47 +358,7 @@ public class Marian {
         }
         return possibleBlocks;
     }
-
-    //calculateFitness
-    //  Beschrijving: calculateFitness
-    //  Input: 
-    //  Output:
-    //  Gemaakt door: Gerco Versloot
-    public double calculateFitness(Chromosome chromosome, int base) {
-        double fitness = 0;
-        int totalCount = 0;
-        Block prevBlock = floor;
-
-        for (Block currentBlock : chromosome.getSequence()) {
-            if (currentBlock != floor) {
-                totalCount += Math.abs(currentBlock.getID() - prevBlock.getID());
-            }
-
-            prevBlock = currentBlock;
-
-        }
-        fitness = (float) totalCount / base;
-        return 1 - fitness;
-    }
-
-    //getPopulation
-    //  Beschrijving: getPopulation returned de population.
-    //  Input: -
-    //  Output: Een populatie.
-    //  Gemaakt door: Gerco Versloot    
-    public ArrayList<Chromosome> getPopulation() {
-        return population;
-    }
-
-    //setPopulation
-    //  Beschrijving: setPopulation slaat de opgegeven ArrayList met Chromosomen op als population.
-    //  Input: Een populatie.
-    //  Output: - 
-    //  Gemaakt door: Gerco Versloot 
-    public void setPopulation(ArrayList<Chromosome> population) {
-        this.population = population;
-    }
-
+    
     //getFloor
     //  Beschrijving: getFloor returned de floor.
     //  Input: -
