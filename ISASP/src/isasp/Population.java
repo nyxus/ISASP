@@ -6,6 +6,7 @@
 package isasp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -17,13 +18,11 @@ public class Population {
     private ArrayList<Chromosome> list = new ArrayList<>();
     private int Max;
     private int Min;
-    private int TotalFitness;
+    private double TotalFitness;
 
     /**
      * Adds a Chromosome to the population list and checks if new Max or Min
-     *
      * @autor Gerco Versloot
-     *
      * @param chr The Chromosome to add at the list
      */
     public void addChromosome(Chromosome chr) {
@@ -53,33 +52,23 @@ public class Population {
     
     public void calculateFitness(){
         double fitness;
+        this.TotalFitness = 0;
         for (Chromosome chr : list) {
             fitness =  ( (double)getMin() / (double)chr.getSize());
             TotalFitness += fitness;
             chr.setFitness(fitness);
         }
-       // System.out.println("total fitness: " + TotalFitness);
+    }
+    
+    /**
+     * Shorts the current list based on fitness, 
+     * fist in the list is the best fitness, 
+     * the last in the list is the worst fitness
+     */
+    public void sortByFitness(){
+        Collections.sort(this.list);
     }
 
-
-  /*
-     public double calculateFitness(Chromosome chromosome, int base) {
-     double fitness = 0;
-     int totalCount = 0;
-     Block prevBlock = floor;
-
-     for (Block currentBlock : chromosome.getSequence()) {
-     if (currentBlock != floor) {
-     totalCount += Math.abs(currentBlock.getID() - prevBlock.getID());
-     }
-
-     prevBlock = currentBlock;
-
-     }
-     fitness = (float) totalCount / base;
-     return 1 - fitness;
-     }
-     */
     /**
      * @return a string of all Chromosomes in the population list
      * with an  new line as Saperator
@@ -115,7 +104,7 @@ public class Population {
 
     /**
      * @param list set the population list
-     * Also automaticly finds the new Max and Min 
+     * Also automatically finds the new Max and Min of the provided list
      * @author Gerco Versloot
      */
     public void setList(ArrayList<Chromosome> list) {
@@ -124,7 +113,7 @@ public class Population {
     }
 
     /**
-     * @return the Max
+     * @return the Maximal fitness of this population 
      * @author Gerco Versloot
      */
     public int getMax() {
@@ -140,7 +129,7 @@ public class Population {
     }
 
     /**
-     * @return the Min
+     * @return the Minimal fitness of this population 
      * @author Gerco Versloot
      */
     public int getMin() {
@@ -154,5 +143,12 @@ public class Population {
     private void setMin(int Min) {
         this.Min = Min;
     }
-
+    
+    /**
+     * @return the TotoalFitnees fitness of this population 
+     * @author Gerco Versloot
+     */
+    public double getTotalFitness() {
+        return TotalFitness;
+    }
 }

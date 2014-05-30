@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Marian {
@@ -21,7 +24,13 @@ public class Marian {
     
     //FysicalMatrix is een array met daarin de blokken hoe deze daadwerkelijk opgestapeld zijn.
     private Block[][] fysicalMatrix;
+    
+    private Chromosome bestMin;
 
+    /**
+     * Create a problem to solve with the algorithm of Marian
+     * @param filename the file location that contains the blocks information, id minX maxX minY maxY
+     */
     public Marian(String filename) {
         int problemSize = getProblemSize(filename);
         
@@ -87,27 +96,35 @@ public class Marian {
         }
     }
 
-    //Readproblem 
-    //  Beschrijving: ReadProblem leest het bestand in het opgegeven pad en maakt er een fysieke matrix van blokken van.
-    //  Input: De locatie van het uit te lezen bestand.
-    //  Output: problemSize
-    //  Gemaakt door: Gerco Versloot.
+
+    
+    /**
+     * Reads a problem file and converts a block object, adds the block to the blockColletion and converts to the fysical matrix, . The fysical matrix is a visual representation of the file  
+     * @param file the file location that contains the problem
+     * @autor Gerco Versloot
+     * @return the fysical matrix
+     */
     public void ReadProblem(String file) {  
         try {
-            //Open bestand op de opgegeven locatie
+            //Opens the file from the file location
             FileInputStream fstream = new FileInputStream(ISASP.class.getResource(file).getPath());
 
-            // Get the object of DataInputStream
+            // Read the data from the file into a BufferedReader
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String strLine;
             Block tempBlock;
 
-            //Lees bestand per regel
+            // Loop through each line untill there a no more lines
             while ((strLine = br.readLine()) != null) {
+                
+                // converts line to a block
                 tempBlock = StringToBlock(strLine);
-                            
+                
+                // add block to the blockCollection
                 blockCollection.add(tempBlock.getID(), tempBlock);
+                
+                // add Block to Fysical matrix
                 BlockIntoFysicalMatrix(tempBlock);
             }
             
@@ -119,23 +136,24 @@ public class Marian {
             System.err.println("Error: " + e.getMessage());
         }
     }
-
-    //StringToBlock
-    //  Beschrijving: StringToBlock maakt van een regel uit het door ReadProblem uitgelezen bestand een Block.
-    //  Input: Een regel van een door het programma GeneticProblem gegenereerd bestand.
-    //  Output: Een Block.
-    //  Gemaakt door: Gerco Versloot.
+    
+    /**
+     * Converts a string (a line of the problem file) to a block object, only numbers in the string are allowed
+     * @param inputBlock string format: id minX maxX minY maxY, only numbers
+     * @return a block object
+     * @autor Gerco Versloot
+     */
     public Block StringToBlock(String inputBlock) {
         String[] tempStringBlock;
         Integer[] tempIntBlock;
 
-        //Verwijder alle spaties uit de regel
+        // Split the string to a string array, split is done at a white space
         tempStringBlock = inputBlock.split(" ");
 
-        //Maak van de string een int array
+       // Convert the string array to a interger array, only possible if the strings are numbers
         tempIntBlock = StringToIntArray(tempStringBlock);
 
-        //Maak een nieuwe block aan met de verkregen waarden uit de array
+        // Create a new block object wiht the numbers from the interger array
         Block returnBlock = new Block(tempIntBlock[0], tempIntBlock[1], tempIntBlock[2], tempIntBlock[3], tempIntBlock[4]);
 
         return returnBlock;
@@ -146,12 +164,20 @@ public class Marian {
     //  Input: Een stringarray met daarin alleen cijfers
     //  Output: Een integerarray met daarin alleen Integers
     //  Gemaakt door: Gerco Versloot
+    
+    /**
+     * Converts a string array with numbers to a intergers array with the same numbers 
+     * @param stringArray the array with numbers to convert to intergers
+     * @return int array with only intergers 
+     * @autor Gerco Versloot
+     */
     static Integer[] StringToIntArray(String[] stringArray) {
         Integer[] intArray = new Integer[stringArray.length];
 
-        //Loop door de array en parse elk character naar een integer
+        //Loop throug all string array the elements 
         for (int i = 0; i < stringArray.length; i++) {
             try {
+                // Try to convert single string number to a interger
                 intArray[i] = Integer.parseInt(stringArray[i]);
             } catch (NumberFormatException nfe) {
             };
@@ -358,6 +384,60 @@ public class Marian {
         }
         return possibleBlocks;
     }
+    
+    
+    //crossover --> is niet de werkelijke crossover, ik heb een verdubelaar gemaakt van een populatie, had ik even nodig :p
+    public Population crossover(Population parrents, int amountChilds){
+        for (int i = 0; i < amountChilds; i++) {
+            parrents.addChromosome(parrents.getList().get(i));
+        }
+        return parrents;
+    }
+    
+    /**
+     * generates a new population based on fitness of a other population. 
+     * In general this selection will select the best and some worst Chromosomes   
+     * @param oldPop The input population to generate a new selected population from 
+     * @param newPopSize The size of the new population
+     * @return The new population
+     */
+    public Population getSelecetion(Population oldPop, int newPopSize){
+        Population newPop = new Population();
+        double prevTotalFtnss = 0;
+        PriorityQueue<Double> randFitnss = new PriorityQueue<>();
+        Random r = new Random();
+        oldPop.sortByFitness();
+        
+        // Add random doubles to a sored queue
+        // This random doubels will select the Chromosomes based on its fitness
+        for (int i = 0; i < newPopSize; i++) {
+          randFitnss.add((oldPop.getTotalFitness()  * r.nextDouble()));
+        }
+
+        /* Loop through all old pouplation and if the fitnss matcheses with 
+        * the fitness, add it to the new pouplation
+        */
+        for (Iterator<Chromosome> it = oldPop.getList().iterator(); it.hasNext();) {
+            Chromosome curChr = it.next();
+            
+            while( (prevTotalFtnss + curChr.getFitness()) >= randFitnss.element() ){
+                // if: prevous chomesome fitnes < random selection fitness <= current chromesome fitness
+                if( prevTotalFtnss < randFitnss.element() && randFitnss.element() <= (prevTotalFtnss + curChr.getFitness()) ){
+                    newPop.addChromosome(curChr);
+                    randFitnss.remove();
+                    if(randFitnss.isEmpty()){
+                        return newPop;
+                    }
+                }
+            }
+            prevTotalFtnss += curChr.getFitness();
+        }
+        
+        return newPop;
+        
+    }
+    
+
     
     //getFloor
     //  Beschrijving: getFloor returned de floor.

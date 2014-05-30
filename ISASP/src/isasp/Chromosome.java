@@ -11,10 +11,12 @@ import java.util.ArrayList;
  *
  * @author Gerco
  */
-public class Chromosome {
+public class Chromosome  implements Comparable<Chromosome> {
 
     private ArrayList<Block> sequence = new ArrayList<Block>();
     private int id;
+
+    
     private double fitness; 
     private int size = 0;
     
@@ -78,6 +80,16 @@ public class Chromosome {
         return output; 
     }
     
+    /**
+     * Compares this Chromosome object with an other Chromosome object based on both fitnesses  
+     * @param t the Chromosome to compare to
+     * @return an interger with the difference between the objects, 0: is equal, 1: t is better, -1: t is worse
+     */
+    @Override
+    public int compareTo(Chromosome t) {
+         return Double.compare(t.getFitness(), this.getFitness());
+    }
+    
     public ArrayList<Block> getSequence() {
         return sequence;
     }
@@ -108,5 +120,14 @@ public class Chromosome {
     public int getSize() {
         return size;
     }
+    
+    public int getId() {
+        return id;
+    }
+
+    public Block getPrevBlock() {
+        return prevBlock;
+    }
+
 
 }

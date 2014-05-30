@@ -21,22 +21,37 @@ public class ISASP {
        Block asd2 = new Block(22, 1, 2, 3, 4);
        Block asd3 = new Block(3, 1, 2, 3, 4);
        Block asd4 = new Block(10, 1, 2, 3, 4);
-       
+       int popSize = 100;
        
       Block[] blocks = {asd4, asd1, asd2, asd3,  };   
         Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
        
        // System.out.println(Chms.ToStringChromosome(", "));
         
-        Marian problem = new Marian("probleemMet5");
-        Population pop = problem.guidedSearch(100);
-        System.out.println(pop.toString());
-        //int base;
+        Marian problem = new Marian("60blocks");
+        Population pop = problem.guidedSearch(popSize);
+       /* pop = problem.crossover(pop, 100);
+        System.out.println("size after cross: " +pop.getList().size());
+        System.out.println("Total fitness: " + pop.getTotalFitness());
+        pop = problem.getSelecetion(pop, 100);
+        System.out.println("size after select: " +pop.getList().size());
+        */
         
-       // base = (problem.getBlockCollection().size()/2) * (1 + problem.getBlockCollection().size());
-//        for (Chromosome Chromo : problem.getPopulation()) {
-//            System.out.println("Fitness: " + problem.calculateFitness(Chromo, base));
-//        }
-                
+        System.out.println("Gener " + "st" + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
+        /*
+        for (int gerneration = 0; gerneration < 100; gerneration++) {
+            pop = problem.crossover(pop, popSize);
+            pop = problem.getSelecetion(pop, popSize);
+            System.out.println("Gener " + gerneration + " : Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
+        }
+        */
+        
+        int gernerations = 0;
+        while(pop.getMax() != pop.getMin()){
+            pop = problem.crossover(pop, popSize);
+            pop = problem.getSelecetion(pop, popSize);
+            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
+            gernerations++;
+        }
     }    
 }
