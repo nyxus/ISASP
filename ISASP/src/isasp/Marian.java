@@ -320,42 +320,73 @@ public class Marian {
 
     }
 
-    //guidedSearch
-    //  Beschrijving: guidedSearch
-    //  Input: 
-    //  Output:
-    //  Gemaakt door: Gerco Versloot
-    public Population guidedSearch(int populationSize) {
-        Population pop = new Population();
-        Block currentBlock;
-        int randomNumber;
-        int popuationCount = 0;
-
-        while (populationSize > popuationCount) {
-            Chromosome newChrom = new Chromosome(popuationCount);
-            Block[] doneStack = new Block[blockCollection.size()];
-            ArrayList<Block> possibleStack = new ArrayList<>();
-            possibleStack.add(floor); // add floor to start of stack
-
-            while (possibleStack.size() > 0) {
-                Random random = new Random();
-                randomNumber = random.nextInt(possibleStack.size());
-                currentBlock = possibleStack.get(randomNumber);
-                doneStack[currentBlock.getID()] = currentBlock;
-                possibleStack.remove(currentBlock);
-                newChrom.AddBlockToSequence(currentBlock);
-
-                possibleStack.addAll(getPossibleNextBlocks(currentBlock, doneStack));
-                // get random from current stack
-                // add to done
-                // add to sequence 
-                // search for new possible 
-
-            }
-            pop.addChromosome(newChrom);
-            popuationCount++;
+    /**
+     * Creates a population based on the current Marian problem
+     * @param populationSize the size of the new population
+     * @return the new population
+     * @autor Gerco Versloot
+     */
+    public Population generatePopulation(int populationSize) {
+        Population pop = new Population();        
+        for (int i = 0; i < populationSize; i++) {
+            pop.addChromosome(guidedSearch(i));
         }
         return pop;
+    }
+  
+    /**
+     * Generates a Chromosome based on the Marian approach: select random block and place it, find new possibilities 
+     * @param newId
+     * @return a new Chromosome
+     * @autor Gerco Versloot
+     */
+    public Chromosome guidedSearch(int newId){
+        Chromosome newChrom = new Chromosome(newId);                // the new Chomosome to return filled with blocks
+        Block[] doneStack = new Block[blockCollection.size()];      // stores all placed blocks (For speed)
+        ArrayList<Block> possibleStack = new ArrayList<>();         // List of all blocks that are placable  
+        possibleStack.add(floor);                                   // add floor to start of stack    
+        Block currentBlock;
+        
+        while (possibleStack.size() > 0) {
+            Random random = new Random();
+            currentBlock = possibleStack.get(random.nextInt(possibleStack.size())); // select a random block
+            doneStack[currentBlock.getID()] = currentBlock;                         // add block to the done stack
+            possibleStack.remove(currentBlock);                                     // remove block from possible list
+            newChrom.AddBlockToSequence(currentBlock);                              // add block to the Chomosome 
+
+            possibleStack.addAll(getPossibleNextBlocks(currentBlock, doneStack));   // search for new possibilities and add to possible list
+        }
+        return newChrom;
+    }
+    
+    /**
+     * Generate the rest of a Chromosome, based on Marian guidedsearch approach;
+     * @param chr unfinished Chromosome   
+     * @return  the finished Chromosome 
+     */
+    public Chromosome guidedSearch(Chromosome chr){
+        Block[] doneStack = new Block[blockCollection.size()];      // stores all placed blocks (For speed)
+        ArrayList<Block> possibleStack = new ArrayList<>();         // List of all blocks that are placable    
+        Block currentBlock;
+        
+        //calculate all possibilities from the current Chromosome
+        for(Block block : chr.getSequence()) {
+            doneStack[block.getID()] = block;
+            possibleStack.remove(block);
+            possibleStack.addAll(getPossibleNextBlocks(block, doneStack));  // add to possibilities list
+        }
+        
+        // calculate and add all possibilities from possibilities list  
+        while (possibleStack.size() > 0) {
+            Random random = new Random();
+            currentBlock = possibleStack.get(random.nextInt(possibleStack.size())); // select a random block
+            doneStack[currentBlock.getID()] = currentBlock;                         // add block to the done stack
+            possibleStack.remove(currentBlock);                                     // remove block from possible list
+            chr.AddBlockToSequence(currentBlock);                                   // add block to the Chomosome 
+            
+            possibleStack.addAll(getPossibleNextBlocks(currentBlock, doneStack));   // search for new possibilities and add to possible list
+        }
+        return chr;
     }
 
     //getPossibleNextBlocks

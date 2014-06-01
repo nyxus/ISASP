@@ -6,6 +6,7 @@
 
 package isasp;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -55,8 +56,12 @@ public class Chromosome  implements Comparable<Chromosome> {
     
     public ArrayList<Block> GetSelection(int Min,int Max){
         ArrayList<Block> selection = new ArrayList();
+        for (Iterator<Block> it = sequence.listIterator(Min); it.hasNext() && Max - Min  >= 0 ;) {
+            selection.add(it.next());
+            Max--;   
+        }
         for (int i = Min; i < Max ; i++) {
-            selection.get(i); 
+            selection.add(sequence.get(i));
         }
         return selection;
     }
