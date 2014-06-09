@@ -418,11 +418,81 @@ public class Marian {
     
     
     //crossover --> is niet de werkelijke crossover, ik heb een verdubelaar gemaakt van een populatie, had ik even nodig :p
-    public Population crossover(Population parrents, int amountChilds){
+    public Population crossover(Population parents, int amountChilds){
         for (int i = 0; i < amountChilds; i++) {
-            parrents.addChromosome(parrents.getList().get(i));
+            parents.addChromosome(parents.getList().get(i));
         }
-        return parrents;
+        return parents;      
+    }
+    
+    public Population crossOver(Population population){
+        ArrayList<Chromosome> temppopulation = new ArrayList<>(population.getList());
+        ArrayList<Chromosome> parents = new ArrayList<>();
+        Random random = new Random();
+        int selection;
+        int cutpoint;
+        Chromosome tempChrom;
+                
+        //input
+        //A population of faesible parent chromosomes from the current generation and the model of the product as shown in the previous section.
+//        System.out.println("Input population: \n"+ population.toString());
+        
+        //C1
+        //Randomly select pairs of parent chromosomes
+        for(int i = 0; i < population.getSize(); i++){
+            selection = random.nextInt(temppopulation.size());
+            parents.add(temppopulation.get(selection));
+            temppopulation.remove(selection);
+        }
+        
+        for(int i = 0; i < parents.size(); i++){
+            System.out.println("Parent " + i + ": " + parents.get(i).ToString());
+        }
+        
+        for(int i = 0; i < parents.size(); i = i + 2){
+            //C2
+            //For the first pair of parent chromosomes randomly select the cut point (gene 2 to n-1)
+            // random.nextInt(max - min) + min
+            int max = parents.get(i).getSequence().size();
+            int min = 2;
+            
+            cutpoint = random.nextInt(max - min) + min;
+            
+            System.out.println("Cut point i:"+i+" = "+cutpoint);
+            
+            for(int j = cutpoint; j < parents.get(i).getSequence().size(); j++){
+                parents.get(i).getSequence().set(j, new Block(0, 0, 0, 0, 0));
+                parents.get(i+1).getSequence().set(j, new Block(0, 0, 0, 0, 0));
+            }
+            
+            System.out.println("Parent1 " + i + ": " + parents.get(i).ToString());
+            System.out.println("Parent2 " + (i + 1) + ": " + parents.get(i + 1).ToString());
+            System.out.println("");
+
+        }
+        
+
+        //C3
+        //For the first parent chromosome
+       
+        //C4
+        //For first locus at the right hand side of the cut point
+        //Determine, by guided search, the candidate vertices for the gene;
+        //If the gene in the corresponding locus from the other parent is amongst candidates, THEN choose it, ELSE place any other candidate gene;
+        
+        
+        //C5
+        //Repeat step C4 for all loci to the end of the chromosome
+        
+        //C6 
+        //Repeat seteps C4-5 for the second parent chromosome
+        
+        //C7
+        //Repeat steps C2 - C6 for the remaining pairs of parent chromosomes
+        
+        //A population of feasible offspring (Children) chromosomes;      
+        
+        return population;
     }
     
     /**
