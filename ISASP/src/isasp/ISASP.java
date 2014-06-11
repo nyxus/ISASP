@@ -30,10 +30,15 @@ public class ISASP {
         
         Marian problem = new Marian("probleemMet5");
         Population pop = problem.generatePopulation(popSize);
-        Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
-        System.out.println(chr.ToString());
-        problem.guidedSearch(chr);
-        System.out.println(chr.ToString());
+        
+        problem.crossOver(pop);
+        
+        System.out.println(problem.ToStringDependencyMatrix());
+        
+//        Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
+//        System.out.println(chr.ToString());
+//        problem.guidedSearch(chr);
+//        System.out.println(chr.ToString());
         
         //System.out.println("Gener " + "st" + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
         /*
