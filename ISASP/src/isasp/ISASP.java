@@ -21,20 +21,22 @@ public class ISASP {
        Block asd2 = new Block(22, 1, 2, 3, 4);
        Block asd3 = new Block(3, 1, 2, 3, 4);
        Block asd4 = new Block(10, 1, 2, 3, 4);
-       int popSize = 100;
+       int popSize = 500;
        
       Block[] blocks = {asd4, asd1, asd2, asd3,  };   
       Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
        
        // System.out.println(Chms.ToStringChromosome(", "));
         
-        Marian problem = new Marian("probleemMet5");
+        Marian problem = new Marian("60blocks");
         Population pop = problem.generatePopulation(popSize);
-        Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
+        problem.run(pop, popSize);
+       
+        /*Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
         System.out.println(chr.ToString());
         problem.guidedSearch(chr);
         System.out.println(chr.ToString());
-        
+        */
         //System.out.println("Gener " + "st" + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
         /*
         for (int gerneration = 0; gerneration < 100; gerneration++) {
@@ -51,6 +53,6 @@ public class ISASP {
             System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + (pop.getTotalFitness()/(double)pop.getList().size()));
             gernerations++;
         }
-                */
+        */        
     }    
 }

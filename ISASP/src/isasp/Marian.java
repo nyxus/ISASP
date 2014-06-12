@@ -473,7 +473,7 @@ public class Marian {
         while(pop.getMax() != pop.getMin()){
             pop = this.crossover(pop, popSize);
             pop = this.getSelecetion(pop, popSize);
-            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( this.bestMin.getFitness() / (pop.getTotalFitness()/(double)pop.getList().size()) ));
+            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( (pop.getTotalFitness()/(double)pop.getList().size()) ));
             gernerations++;
         }
         return pop;
