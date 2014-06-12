@@ -13,9 +13,6 @@ import java.util.Random;
 public class Marian {
     private Block floor = new Block(0, 1, 1, 0, 0);
        
-    //Population is een ArrayList van Chromosomen. 
-    
-        
     //BlockCollection bevat alle blocks van een probleem.
     private ArrayList<Block> blockCollection = new ArrayList<>();
     
@@ -473,7 +470,8 @@ public class Marian {
         while(pop.getMax() != pop.getMin()){
             pop = this.crossover(pop, popSize);
             pop = this.getSelecetion(pop, popSize);
-            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( this.bestMin.getFitness() / (pop.getTotalFitness()/(double)pop.getList().size()) ));
+            
+            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( (pop.getTotalFitness()/(double)pop.getList().size()) ));
             gernerations++;
         }
         return pop;
