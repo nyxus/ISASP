@@ -6,36 +6,39 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Marian {
+
     private Block floor = new Block(0, 1, 1, 0, 0);
-       
+
     //Population is een ArrayList van Chromosomen. 
-    
-        
     //BlockCollection bevat alle blocks van een probleem.
     private ArrayList<Block> blockCollection = new ArrayList<>();
-    
+
     //DependencyMatrix is een array van booleans welke beschrijft welke blokken benodigd zijn om een desbetreffende block te plaatsen.
     private Boolean[][] dependencyMatrix;
-    
+
     //FysicalMatrix is een array met daarin de blokken hoe deze daadwerkelijk opgestapeld zijn.
     private Block[][] fysicalMatrix;
-    
+
     private Chromosome bestMin;
+    private int problemSize;
 
     /**
      * Create a problem to solve with the algorithm of Marian
-     * @param filename the file location that contains the blocks information, id minX maxX minY maxY
+     *
+     * @param filename the file location that contains the blocks information,
+     * id minX maxX minY maxY
      */
     public Marian(String filename) {
-        int problemSize = getProblemSize(filename);
-        
-        System.out.println("ProblemSize = "+ problemSize);
-        
+        problemSize = getProblemSize(filename);
+
+        System.out.println("ProblemSize = " + problemSize);
+
         floor = new Block(0, 0, problemSize, 0, 0);
 
         this.fysicalMatrix = new Block[problemSize + 1][problemSize];
@@ -44,28 +47,28 @@ public class Marian {
         for (int i = 0; i < problemSize; i++) {
             fysicalMatrix[0][i] = floor;
         }
-        
+
         blockCollection.add(floor);
-        
+
         ReadProblem(filename);
-        
+
         convertToDependencyMatrix();
-       // System.out.println("- Fysical Matrix -\n"+ToStringFysicalMatrix());
+        // System.out.println("- Fysical Matrix -\n"+ToStringFysicalMatrix());
         //System.out.println("- Block Collection -\n"+ToStringBlockCollection());
-       // System.out.println("- Dependency Matrix -\n"+ToStringDependencyMatrix());
+        // System.out.println("- Dependency Matrix -\n"+ToStringDependencyMatrix());
 
     }
-    
+
     //getProblemSize
     //  Beschrijving: getProblemSize leest het bestand in het opgegeven pad en berekend hieruit de groote van het probleem.
     //  Input: De locatie van het uit te lezen bestand.
     //  Output: problemSize als een Integer.
     //  Gemaakt door: Peter Tielbeek.
-    public int getProblemSize(String filename){
+    public int getProblemSize(String filename) {
         int problemSize = 0;
         int compare = 0;
         String splitarray[];
-        
+
         try {
             //Open bestand op de opgegeven locatie
             FileInputStream fstream = new FileInputStream(ISASP.class.getResource(filename).getPath());
@@ -78,17 +81,17 @@ public class Marian {
             //Lees bestand per regel
             while ((strLine = br.readLine()) != null) {
                 splitarray = strLine.split(" ");
-                
+
                 compare = Integer.parseInt(splitarray[2]);
-                
-                if(compare > problemSize){
+
+                if (compare > problemSize) {
                     problemSize = compare;
                 }
             }
-            
+
             //Close the input stream
             in.close();
-            return problemSize+1;
+            return problemSize + 1;
         } catch (Exception e) {
             //Catch exception if any
             System.out.println("Error: " + e.getMessage());
@@ -96,15 +99,15 @@ public class Marian {
         }
     }
 
-
-    
     /**
-     * Reads a problem file and converts a block object, adds the block to the blockColletion and converts to the fysical matrix, . The fysical matrix is a visual representation of the file  
+     * Reads a problem file and converts a block object, adds the block to the
+     * blockColletion and converts to the fysical matrix, . The fysical matrix
+     * is a visual representation of the file
+     *
      * @param file the file location that contains the problem
-     * @autor Gerco Versloot
-     * @return the fysical matrix
+     * @author Gerco Versloot
      */
-    public void ReadProblem(String file) {  
+    public void ReadProblem(String file) {
         try {
             //Opens the file from the file location
             FileInputStream fstream = new FileInputStream(ISASP.class.getResource(file).getPath());
@@ -117,31 +120,33 @@ public class Marian {
 
             // Loop through each line untill there a no more lines
             while ((strLine = br.readLine()) != null) {
-                
+
                 // converts line to a block
                 tempBlock = StringToBlock(strLine);
-                
+
                 // add block to the blockCollection
                 blockCollection.add(tempBlock.getID(), tempBlock);
-                
+
                 // add Block to Fysical matrix
                 BlockIntoFysicalMatrix(tempBlock);
             }
-            
+
             //Close the input stream
             in.close();
-            
+
         } catch (Exception e) {
             //Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Converts a string (a line of the problem file) to a block object, only numbers in the string are allowed
+     * Converts a string (a line of the problem file) to a block object, only
+     * numbers in the string are allowed
+     *
      * @param inputBlock string format: id minX maxX minY maxY, only numbers
      * @return a block object
-     * @autor Gerco Versloot
+     * @author Gerco Versloot
      */
     public Block StringToBlock(String inputBlock) {
         String[] tempStringBlock;
@@ -150,7 +155,7 @@ public class Marian {
         // Split the string to a string array, split is done at a white space
         tempStringBlock = inputBlock.split(" ");
 
-       // Convert the string array to a interger array, only possible if the strings are numbers
+        // Convert the string array to a interger array, only possible if the strings are numbers
         tempIntBlock = StringToIntArray(tempStringBlock);
 
         // Create a new block object wiht the numbers from the interger array
@@ -164,12 +169,13 @@ public class Marian {
     //  Input: Een stringarray met daarin alleen cijfers
     //  Output: Een integerarray met daarin alleen Integers
     //  Gemaakt door: Gerco Versloot
-    
     /**
-     * Converts a string array with numbers to a intergers array with the same numbers 
+     * Converts a string array with numbers to a intergers array with the same
+     * numbers
+     *
      * @param stringArray the array with numbers to convert to intergers
-     * @return int array with only intergers 
-     * @autor Gerco Versloot
+     * @return int array with only intergers
+     * @author Gerco Versloot
      */
     static Integer[] StringToIntArray(String[] stringArray) {
         Integer[] intArray = new Integer[stringArray.length];
@@ -322,31 +328,34 @@ public class Marian {
 
     /**
      * Creates a population based on the current Marian problem
+     *
      * @param populationSize the size of the new population
      * @return the new population
-     * @autor Gerco Versloot
+     * @author Gerco Versloot
      */
     public Population generatePopulation(int populationSize) {
-        Population pop = new Population();        
+        Population pop = new Population();
         for (int i = 0; i < populationSize; i++) {
             pop.addChromosome(guidedSearch(i));
         }
         return pop;
     }
-  
+
     /**
-     * Generates a Chromosome based on the Marian approach: select random block and place it, find new possibilities 
+     * Generates a Chromosome based on the Marian approach: select random block
+     * and place it, find new possibilities
+     *
      * @param newId
      * @return a new Chromosome
-     * @autor Gerco Versloot
+     * @author Gerco Versloot
      */
-    public Chromosome guidedSearch(int newId){
+    public Chromosome guidedSearch(int newId) {
         Chromosome newChrom = new Chromosome(newId);                // the new Chomosome to return filled with blocks
         Block[] doneStack = new Block[blockCollection.size()];      // stores all placed blocks (For speed)
         ArrayList<Block> possibleStack = new ArrayList<>();         // List of all blocks that are placable  
         possibleStack.add(floor);                                   // add floor to start of stack    
         Block currentBlock;
-        
+
         while (possibleStack.size() > 0) {
             Random random = new Random();
             currentBlock = possibleStack.get(random.nextInt(possibleStack.size())); // select a random block
@@ -358,24 +367,25 @@ public class Marian {
         }
         return newChrom;
     }
-    
+
     /**
      * Generate the rest of a Chromosome, based on Marian guidedsearch approach;
-     * @param chr unfinished Chromosome   
-     * @return  the finished Chromosome 
+     *
+     * @param chr unfinished Chromosome
+     * @return the finished Chromosome
      */
-    public Chromosome guidedSearch(Chromosome chr){
+    public Chromosome guidedSearch(Chromosome chr) {
         Block[] doneStack = new Block[blockCollection.size()];      // stores all placed blocks (For speed)
         ArrayList<Block> possibleStack = new ArrayList<>();         // List of all blocks that are placable    
         Block currentBlock;
-        
+
         //calculate all possibilities from the current Chromosome
-        for(Block block : chr.getSequence()) {
+        for (Block block : chr.getSequence()) {
             doneStack[block.getID()] = block;
             possibleStack.remove(block);
             possibleStack.addAll(getPossibleNextBlocks(block, doneStack));  // add to possibilities list
         }
-        
+
         // calculate and add all possibilities from possibilities list  
         while (possibleStack.size() > 0) {
             Random random = new Random();
@@ -383,7 +393,7 @@ public class Marian {
             doneStack[currentBlock.getID()] = currentBlock;                         // add block to the done stack
             possibleStack.remove(currentBlock);                                     // remove block from possible list
             chr.AddBlockToSequence(currentBlock);                                   // add block to the Chomosome 
-            
+
             possibleStack.addAll(getPossibleNextBlocks(currentBlock, doneStack));   // search for new possibilities and add to possible list
         }
         return chr;
@@ -415,48 +425,215 @@ public class Marian {
         }
         return possibleBlocks;
     }
-    
-    
+
     //crossover --> is niet de werkelijke crossover, ik heb een verdubelaar gemaakt van een populatie, had ik even nodig :p
-    public Population crossover(Population parrents, int amountChilds){
+    public Population crossover(Population parents, int amountChilds) {
         for (int i = 0; i < amountChilds; i++) {
-            parrents.addChromosome(parrents.getList().get(i));
+            parents.addChromosome(parents.getList().get(i));
         }
-        return parrents;
+        return parents;
     }
-    
+
+    public Population crossOver(Population population) {
+        ArrayList<Chromosome> temppopulation = new ArrayList<>(population.getList());
+        ArrayList<Chromosome> parents = new ArrayList<>();
+        ArrayList<Integer> possibleBlocks = new ArrayList<>();
+        
+        ArrayList<Block> children = new ArrayList<>();
+        ArrayList<Block> parent1RightLocus = new ArrayList<>();
+        ArrayList<Block> parent2RightLocus = new ArrayList<>();
+        
+        Random random = new Random();
+        int selection;
+        int cutpoint;
+
+        //input
+        //A population of faesible parent chromosomes from the current generation and the model of the product as shown in the previous section.
+//        System.out.println("Input population: \n"+ population.toString());
+        //C1
+        //Randomly select pairs of parent chromosomes
+        for (int i = 0; i < population.getSize(); i++) {
+            selection = random.nextInt(temppopulation.size());
+            parents.add(temppopulation.get(selection));
+            temppopulation.remove(selection);
+        }
+
+        for (int i = 0; i < parents.size(); i++) {
+            System.out.println("Parent " + i + ": " + parents.get(i).ToString());
+        }
+
+        for (int i = 0; i < parents.size(); i = i + 2) {
+            //C2
+            //For the first pair of parent chromosomes randomly select the cut point (gene 2 to n-1)
+            // random.nextInt(max - min) + min
+            int max = parents.get(i).getSequence().size() - 1;
+            int min = 2;
+
+            cutpoint = random.nextInt(max - min) + min;
+            System.out.println("Cut point: " + cutpoint);
+            
+            //Save Right Locus from parents
+            for (int j = cutpoint + 1; j < getBlockCollection().size(); j++) {
+                parent1RightLocus.add(parents.get(i).getSequence().get(j));
+                parent2RightLocus.add(parents.get(i + 1).getSequence().get(j));
+            }
+
+            //Remove Right Locus from parents
+            for (int j = parents.get(i).getSequence().size() - 1; j > cutpoint; j--) {
+                parents.get(i).getSequence().remove(j);
+                parents.get(i + 1).getSequence().remove(j);
+            }
+            
+            System.out.print("Parent1 Left Locus: ");
+            for(int j = 0; j < parents.get(i).getSequence().size(); j++){
+                System.out.print(parents.get(i).getSequence().get(j).getID()+", ");
+            }
+            
+            System.out.println();
+            System.out.print("Parent2 Right Locus: ");
+            for(int j = 0; j < parent2RightLocus.size(); j++){
+                System.out.print(parent2RightLocus.get(j).getID()+", ");
+            }
+            System.out.println();
+            
+            //GuidedSearch for parent 1
+            for(int j = 0; j < parent2RightLocus.size(); j++){
+                possibleBlocks = getPossibleBlocks(parents.get(i).getSequence());
+                for(int k = 0; k < possibleBlocks.size(); k++){
+//                    System.out.println("Candidate: "+possibleBlocks.get(k));
+                    if(parent2RightLocus.get(j).getID() == possibleBlocks.get(k)){
+//                        System.out.println("The block from the right locus is immediatly placeable");
+                        parents.get(i).getSequence().add(parent2RightLocus.get(j));
+                        break;
+                    }
+                }
+            }
+            
+            System.out.println("Parent1 " + i + ": " + parents.get(i).ToString());
+            System.out.println("Parent2 " + (i + 1) + ": " + parents.get(i + 1).ToString());
+            System.out.println("");
+            
+            parent1RightLocus.clear();
+            parent2RightLocus.clear();
+        }
+
+        //C3
+        //For the first parent chromosome
+        //C4
+        //For first locus at the right hand side of the cut point
+        //Determine, by guided search, the candidate vertices for the gene;
+        //If the gene in the corresponding locus from the other parent is amongst candidates, THEN choose it, ELSE place any other candidate gene;
+        //C5
+        //Repeat step C4 for all loci to the end of the chromosome
+        //C6 
+        //Repeat seteps C4-5 for the second parent chromosome
+        //C7
+        //Repeat steps C2 - C6 for the remaining pairs of parent chromosomes
+        //A population of feasible offspring (Children) chromosomes;      
+        return population;
+    }
+
     /**
-     * generates a new population based on fitness of a other population. 
-     * In general this selection will select the best and some worst Chromosomes   
-     * @param oldPop The input population to generate a new selected population from 
+     * Searches for the possible candidates to be placed
+     *
+     * @author Peter Tielbeek
+     * @param leftLocus is the leftLocus of a parent.
+     * @return The possible candidates of blocks to be placed
+     */
+    public ArrayList<Integer> getPossibleBlocks(ArrayList<Block> leftLocus) {
+        ArrayList<Integer> possibleBlocks = new ArrayList<>();
+        ArrayList<Integer> bannedBlocks = new ArrayList<>();
+
+        //Check for every placed block the blocks on top
+        for (int i = 0; i < leftLocus.size(); i++) {
+            //Check the dependencyMatrix vertically for Blocks wich can be placed
+            for (int j = 0; j < dependencyMatrix.length; j++) {
+                if (dependencyMatrix[j][leftLocus.get(i).getID()]) {
+                    //Check for the needed blocks
+                    for (int k = 0; k < dependencyMatrix.length; k++) {
+                        if (dependencyMatrix[j][k]) {
+                            for (int l = 0; l < leftLocus.size(); l++) {
+                                //Check if the block is placed
+                                if (leftLocus.get(l).getID() == k) {
+                                    //Add to posible Blocks
+                                    possibleBlocks.add(j);
+                                    break;
+                                }
+                                //If the block needed block is not placed
+                                if (l == leftLocus.size() - 1) {
+                                    //Ban the block
+                                    bannedBlocks.add(j);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Remove Duplicates
+        HashSet hs = new HashSet();
+        hs.addAll(possibleBlocks);
+        possibleBlocks.clear();
+        possibleBlocks.addAll(hs);
+
+        //Remove already placed blocks
+        for (int i = 0; i < leftLocus.size(); i++) {
+            for (int j = 0; j < possibleBlocks.size(); j++) {
+                if (leftLocus.get(i).getID() == possibleBlocks.get(j)) {
+                    possibleBlocks.remove(j);
+                    break;
+                }
+            }
+        }
+
+        //Remove banned blocks
+        for (int i = 0; i < bannedBlocks.size(); i++) {
+            for (int j = 0; j < possibleBlocks.size(); j++) {
+                if (bannedBlocks.get(i).equals(possibleBlocks.get(j))) {
+                    possibleBlocks.remove(j);
+                    break;
+                }
+            }
+        }
+
+        return possibleBlocks;
+    }
+
+    /**
+     * generates a new population based on fitness of a other population. In
+     * general this selection will select the best and some worst Chromosomes
+     *
+     * @param oldPop The input population to generate a new selected population
+     * from
      * @param newPopSize The size of the new population
      * @return The new population
      */
-    public Population getSelecetion(Population oldPop, int newPopSize){
+    public Population getSelecetion(Population oldPop, int newPopSize) {
         Population newPop = new Population();
         double prevTotalFtnss = 0;
         PriorityQueue<Double> randFitnss = new PriorityQueue<>();
         Random r = new Random();
         oldPop.sortByFitness();
-        
+
         // Add random doubles to a sored queue
         // This random doubels will select the Chromosomes based on its fitness
         for (int i = 0; i < newPopSize; i++) {
-          randFitnss.add((oldPop.getTotalFitness()  * r.nextDouble()));
+            randFitnss.add((oldPop.getTotalFitness() * r.nextDouble()));
         }
 
         /* Loop through all old pouplation and if the fitnss matcheses with 
-        * the fitness, add it to the new pouplation
-        */
+         * the fitness, add it to the new pouplation
+         */
         for (Iterator<Chromosome> it = oldPop.getList().iterator(); it.hasNext();) {
             Chromosome curChr = it.next();
-            
-            while( (prevTotalFtnss + curChr.getFitness()) >= randFitnss.element() ){
+
+            while ((prevTotalFtnss + curChr.getFitness()) >= randFitnss.element()) {
                 // if: prevous chomesome fitnes < random selection fitness <= current chromesome fitness
-                if( prevTotalFtnss < randFitnss.element() && randFitnss.element() <= (prevTotalFtnss + curChr.getFitness()) ){
+                if (prevTotalFtnss < randFitnss.element() && randFitnss.element() <= (prevTotalFtnss + curChr.getFitness())) {
                     newPop.addChromosome(curChr);
                     randFitnss.remove();
-                    if(randFitnss.isEmpty()){
+                    if (randFitnss.isEmpty()) {
                         return newPop;
                     }
                 }
@@ -479,7 +656,10 @@ public class Marian {
         return pop;
     }
 
-    
+        return newPop;
+
+    }
+
     //getFloor
     //  Beschrijving: getFloor returned de floor.
     //  Input: -

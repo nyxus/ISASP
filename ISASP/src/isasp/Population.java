@@ -22,7 +22,7 @@ public class Population {
 
     /**
      * Adds a Chromosome to the population list and checks if new Max or Min
-     * @autor Gerco Versloot
+     * @author Gerco Versloot
      * @param chr The Chromosome to add at the list
      */
     public void addChromosome(Chromosome chr) {
@@ -113,6 +113,15 @@ public class Population {
     }
 
     /**
+     * @param selection the position of the chromosome in the array as an integer
+     * @return The selected chromosome
+     * @author Peter Tielbeek
+     */
+    public Chromosome getChromosome(Integer selection) {
+        return list.get(selection);
+    }
+
+    /**
      * @return the Maximal fitness of this population 
      * @author Gerco Versloot
      */
@@ -142,6 +151,14 @@ public class Population {
      */
     private void setMin(int Min) {
         this.Min = Min;
+    }
+
+    /**
+        * @author Peter Tielbeek
+        * @return An integer with the size of the population
+     */
+    public Integer getSize() {
+        return list.size();
     }
     
     /**
