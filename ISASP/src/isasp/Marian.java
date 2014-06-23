@@ -435,16 +435,17 @@ public class Marian {
     }
 
     public Population crossOver(Population population) {
+        System.out.println(population.toString());
+        
         ArrayList<Chromosome> temppopulation = new ArrayList<>(population.getList());
         ArrayList<Chromosome> parents = new ArrayList<>();
+        Population childPopulation = new Population();
         
         ArrayList<Block> parent1LeftLocus = new ArrayList<>();
         ArrayList<Block> parent2LeftLocus = new ArrayList<>();
         ArrayList<Block> parent1RightLocus = new ArrayList<>();
         ArrayList<Block> parent2RightLocus = new ArrayList<>();
-        ArrayList<Block> child1 = new ArrayList<>();
-        ArrayList<Block> child2 = new ArrayList<>();
-        ArrayList<Block> possibleBlocks = new ArrayList<>();
+        ArrayList<Block> possibleBlocks;
         
         Random random = new Random();
         
@@ -514,8 +515,9 @@ public class Marian {
             }
             System.out.println();
             
+            
             System.out.println();
-            System.out.println("Guided search");
+            System.out.println("Guided search parent 1");
             System.out.println();
 
             //C3
@@ -569,7 +571,61 @@ public class Marian {
                     } 
                 } 
             }
+            System.out.println();
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------");
+
             
+            System.out.println();
+            System.out.println("Guided search parent 2");
+            System.out.println();
+            
+            
+            for(int j = 0; j < parent1RightLocus.size(); j++){
+                //Check for candidates
+                possibleBlocks = getPossibleBlocks(parent2LeftLocus);
+                
+                System.out.print("Parent2LeftLocus: ");
+                for(int k = 0; k < parent2LeftLocus.size(); k++){
+                    System.out.print(parent2LeftLocus.get(k).getID() + ", ");
+                }
+                System.out.println();
+                System.out.print("Parent1RightLocus: ");
+                for(int k = 0; k < parent1RightLocus.size(); k++){
+                    System.out.print(parent1RightLocus.get(k).getID()+", ");
+                }
+                System.out.println();
+                System.out.print("Possible blocks: ");
+                for(int k = 0; k < possibleBlocks.size(); k++){
+                    System.out.print(possibleBlocks.get(k).getID()+", ");
+                }
+                System.out.println();
+                
+                //Check if there are possible blocks
+                if(possibleBlocks.size() > 0){
+                    System.out.println();
+                    
+                    if(possibleBlocks.contains(parent1RightLocus.get(0))){
+                        //The gene is amongst the candidates so add it to the left locus of parent 1
+                        parent2LeftLocus.add(parent1RightLocus.get(0));
+                        System.out.println("Gene "+parent1RightLocus.get(0).getID()+" is amongst the candidates "+parent1RightLocus.get(0).getID()+" is placed");
+                        parent1RightLocus.remove(0);
+                        j--;
+                    } else {
+                        //Choose random candidate
+                        selection = random.nextInt(possibleBlocks.size());
+                        System.out.println("Gene "+parent1RightLocus.get(0).getID()+" is not amongst the candidates random block "+possibleBlocks.get(selection).getID()+" is placed");
+                        for(int k = 0; k < possibleBlocks.size(); k++){
+                            if(selection == k){
+                                parent2LeftLocus.add(possibleBlocks.get(k));                            
+                            }
+                        }
+                        parent1RightLocus.remove(0);
+                        j--;
+                    } 
+                }
+            }
+
+            System.out.println();
             System.out.print("Parent1 before crossover: ");
             for(int k = 0; k < parents.get(i).getSequence().size(); k++){
                 System.out.print(parents.get(i).getSequence().get(k).getID() + ", ");
@@ -580,7 +636,22 @@ public class Marian {
                 System.out.print(parent1LeftLocus.get(k).getID() + ", ");
             }
             System.out.println();
+            System.out.print("Parent2 before crossover: ");
+            for(int k = 0; k < parents.get(i+1).getSequence().size(); k++){
+                System.out.print(parents.get(i+1).getSequence().get(k).getID() + ", ");
+            }
+            System.out.println();
+            System.out.print("Parent2 Child:          : ");
+            for(int k = 0; k < parent2LeftLocus.size(); k++){
+                System.out.print(parent2LeftLocus.get(k).getID() + ", ");
+            }
+            System.out.println();
             System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------");
+            
+            
+            //Fill the population with the newly created childs
+            childPopulation.addChromosome(new Chromosome(i, parent1LeftLocus));
+            childPopulation.addChromosome(new Chromosome(i+1, parent1LeftLocus));
             
             //Clear locusses for next use
             parent1LeftLocus.clear();
@@ -590,6 +661,7 @@ public class Marian {
             System.out.println();
         }
         
+        
 
         //C5
         //Repeat step C4 for all loci to the end of the chromosome
@@ -597,8 +669,10 @@ public class Marian {
         //Repeat seteps C4-5 for the second parent chromosome
         //C7
         //Repeat steps C2 - C6 for the remaining pairs of parent chromosomes
-        //A population of feasible offspring (Children) chromosomes;      
-        return population;
+        //A population of feasible offspring (Children) chromosomes;     
+        System.out.println(childPopulation.toString());
+        
+        return childPopulation;
     }
 
     /**
@@ -658,7 +732,7 @@ public class Marian {
         //Remove banned blocks
         for (int i = 0; i < bannedBlocks.size(); i++) {
             for (int j = 0; j < possibleBlocks.size(); j++) {
-                if (bannedBlocks.get(i).equals(possibleBlocks.get(j))) {
+                if (bannedBlocks.get(i).equals(possibleBlocks.get(j).getID())) {
                     possibleBlocks.remove(j);
                     break;
                 }

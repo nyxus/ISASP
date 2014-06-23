@@ -14,7 +14,7 @@ import java.util.Iterator;
  */
 public class Chromosome  implements Comparable<Chromosome> {
 
-    private ArrayList<Block> sequence = new ArrayList<Block>();
+    private ArrayList<Block> sequence = new ArrayList<>();
     private int id;
 
     
