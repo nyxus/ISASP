@@ -21,17 +21,20 @@ public class ISASP {
        Block asd2 = new Block(22, 1, 2, 3, 4);
        Block asd3 = new Block(3, 1, 2, 3, 4);
        Block asd4 = new Block(10, 1, 2, 3, 4);
-       int popSize = 500;
+       int popSize = 50;
        
       Block[] blocks = {asd4, asd1, asd2, asd3,  };   
       Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
        
        // System.out.println(Chms.ToStringChromosome(", "));
         
-        Marian problem = new Marian("60blocks");
+        Marian problem = new Marian("probleemMet5");
         Population pop = problem.generatePopulation(popSize);
         problem.run(pop, popSize);
-       
+
+        problem.crossOver(pop);
+        
+        
         /*Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
         System.out.println(chr.ToString());
         problem.guidedSearch(chr);

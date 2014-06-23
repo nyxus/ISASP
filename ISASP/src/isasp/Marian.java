@@ -437,19 +437,24 @@ public class Marian {
     public Population crossOver(Population population) {
         ArrayList<Chromosome> temppopulation = new ArrayList<>(population.getList());
         ArrayList<Chromosome> parents = new ArrayList<>();
-        ArrayList<Integer> possibleBlocks = new ArrayList<>();
         
-        ArrayList<Block> children = new ArrayList<>();
+        ArrayList<Block> parent1LeftLocus = new ArrayList<>();
+        ArrayList<Block> parent2LeftLocus = new ArrayList<>();
         ArrayList<Block> parent1RightLocus = new ArrayList<>();
         ArrayList<Block> parent2RightLocus = new ArrayList<>();
+        ArrayList<Block> child1 = new ArrayList<>();
+        ArrayList<Block> child2 = new ArrayList<>();
+        ArrayList<Block> possibleBlocks = new ArrayList<>();
         
         Random random = new Random();
+        
         int selection;
         int cutpoint;
+        int min;
+        int max;
 
         //input
         //A population of faesible parent chromosomes from the current generation and the model of the product as shown in the previous section.
-//        System.out.println("Input population: \n"+ population.toString());
         //C1
         //Randomly select pairs of parent chromosomes
         for (int i = 0; i < population.getSize(); i++) {
@@ -458,71 +463,134 @@ public class Marian {
             temppopulation.remove(selection);
         }
 
-        for (int i = 0; i < parents.size(); i++) {
-            System.out.println("Parent " + i + ": " + parents.get(i).ToString());
-        }
-
-        for (int i = 0; i < parents.size(); i = i + 2) {
+        
+        for(int i = 0; i < parents.size(); i = i + 2){
+            System.out.println("Parent 1: "+parents.get(i).ToString());
+            System.out.println("Parent 2: "+parents.get(i+1).ToString());
+            
             //C2
             //For the first pair of parent chromosomes randomly select the cut point (gene 2 to n-1)
             // random.nextInt(max - min) + min
-            int max = parents.get(i).getSequence().size() - 1;
-            int min = 2;
-
+            min = 2;
+            max = getBlockCollection().size() - 1;
+            
             cutpoint = random.nextInt(max - min) + min;
-            System.out.println("Cut point: " + cutpoint);
+            System.out.println("Cutpoint: " + cutpoint);
             
-            //Save Right Locus from parents
-            for (int j = cutpoint + 1; j < getBlockCollection().size(); j++) {
+            //Fill left locusses
+            for(int j = 0; j < cutpoint; j++){
+               parent1LeftLocus.add(parents.get(i).getSequence().get(j));
+               parent2LeftLocus.add(parents.get(i+1).getSequence().get(j));
+            }
+            
+            //Fill right locusses
+            for(int j = cutpoint; j < getBlockCollection().size(); j++){
                 parent1RightLocus.add(parents.get(i).getSequence().get(j));
-                parent2RightLocus.add(parents.get(i + 1).getSequence().get(j));
+                parent2RightLocus.add(parents.get(i+1).getSequence().get(j));
             }
+            
+            //Print locusses
+            System.out.print("Parent 1 Left Locus: ");
+            for(int j = 0; j < parent1LeftLocus.size(); j++){
+                System.out.print(parent1LeftLocus.get(j).getID() + ", ");
+            }
+            System.out.println();
+            
+            System.out.print("Parent 2 Left Locus: ");
+            for(int j = 0; j < parent2LeftLocus.size(); j++){
+                System.out.print(parent2LeftLocus.get(j).getID() + ", ");
+            }
+            System.out.println();
+            
+            System.out.print("Parent 1 Right Locus: ");
+            for(int j = 0; j < parent1RightLocus.size(); j++){
+                System.out.print(parent1RightLocus.get(j).getID() + ", ");
+            }
+            System.out.println();
+            
+            System.out.print("Parent 2 Right Locus: ");
+            for(int j = 0; j < parent2RightLocus.size(); j++){
+                System.out.print(parent2RightLocus.get(j).getID() + ", ");
+            }
+            System.out.println();
+            
+            System.out.println();
+            System.out.println("Guided search");
+            System.out.println();
 
-            //Remove Right Locus from parents
-            for (int j = parents.get(i).getSequence().size() - 1; j > cutpoint; j--) {
-                parents.get(i).getSequence().remove(j);
-                parents.get(i + 1).getSequence().remove(j);
-            }
+            //C3
+            //For the first parent chromosome
+            //C4
+            //For first locus at the right hand side of the cut point
+            //Determine, by guided search, the candidate vertices for the gene;
+            //If the gene in the corresponding locus from the other parent is amongst candidates, THEN choose it, ELSE place any other candidate gene;
             
-            System.out.print("Parent1 Left Locus: ");
-            for(int j = 0; j < parents.get(i).getSequence().size(); j++){
-                System.out.print(parents.get(i).getSequence().get(j).getID()+", ");
-            }
-            
-            System.out.println();
-            System.out.print("Parent2 Right Locus: ");
             for(int j = 0; j < parent2RightLocus.size(); j++){
-                System.out.print(parent2RightLocus.get(j).getID()+", ");
-            }
-            System.out.println();
-            
-            //GuidedSearch for parent 1
-            for(int j = 0; j < parent2RightLocus.size(); j++){
-                possibleBlocks = getPossibleBlocks(parents.get(i).getSequence());
-                for(int k = 0; k < possibleBlocks.size(); k++){
-//                    System.out.println("Candidate: "+possibleBlocks.get(k));
-                    if(parent2RightLocus.get(j).getID() == possibleBlocks.get(k)){
-//                        System.out.println("The block from the right locus is immediatly placeable");
-                        parents.get(i).getSequence().add(parent2RightLocus.get(j));
-                        break;
-                    }
+                //Check for candidates
+                possibleBlocks = getPossibleBlocks(parent1LeftLocus);
+                
+                System.out.print("Parent1LeftLocus: ");
+                for(int k = 0; k < parent1LeftLocus.size(); k++){
+                    System.out.print(parent1LeftLocus.get(k).getID() + ", ");
                 }
+                System.out.println();
+                System.out.print("Parent2RightLocus: ");
+                for(int k = 0; k < parent2RightLocus.size(); k++){
+                    System.out.print(parent2RightLocus.get(k).getID()+", ");
+                }
+                System.out.println();
+                System.out.print("Possible blocks: ");
+                for(int k = 0; k < possibleBlocks.size(); k++){
+                    System.out.print(possibleBlocks.get(k).getID()+", ");
+                }
+                System.out.println();
+                
+                //Check if there are possible blocks
+                if(possibleBlocks.size() > 0){
+                    System.out.println();
+                    
+                    if(possibleBlocks.contains(parent2RightLocus.get(0))){
+                        //The gene is amongst the candidates so add it to the left locus of parent 1
+                        parent1LeftLocus.add(parent2RightLocus.get(0));
+                        System.out.println("Gene "+parent2RightLocus.get(0).getID()+" is amongst the candidates "+parent2RightLocus.get(0).getID()+" is placed");
+                        parent2RightLocus.remove(0);
+                        j--;
+                    } else {
+                        //Choose random candidate
+                        selection = random.nextInt(possibleBlocks.size());
+                        System.out.println("Gene "+parent2RightLocus.get(0).getID()+" is not amongst the candidates random block "+possibleBlocks.get(selection).getID()+" is placed");
+                        for(int k = 0; k < possibleBlocks.size(); k++){
+                            if(selection == k){
+                                parent1LeftLocus.add(possibleBlocks.get(k));                            
+                            }
+                        }
+                        parent2RightLocus.remove(0);
+                        j--;
+                    } 
+                } 
             }
             
-            System.out.println("Parent1 " + i + ": " + parents.get(i).ToString());
-            System.out.println("Parent2 " + (i + 1) + ": " + parents.get(i + 1).ToString());
-            System.out.println("");
+            System.out.print("Parent1 before crossover: ");
+            for(int k = 0; k < parents.get(i).getSequence().size(); k++){
+                System.out.print(parents.get(i).getSequence().get(k).getID() + ", ");
+            }
+            System.out.println();
+            System.out.print("Parent1 Child:          : ");
+            for(int k = 0; k < parent1LeftLocus.size(); k++){
+                System.out.print(parent1LeftLocus.get(k).getID() + ", ");
+            }
+            System.out.println();
+            System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------");
             
+            //Clear locusses for next use
+            parent1LeftLocus.clear();
+            parent2LeftLocus.clear();
             parent1RightLocus.clear();
             parent2RightLocus.clear();
+            System.out.println();
         }
+        
 
-        //C3
-        //For the first parent chromosome
-        //C4
-        //For first locus at the right hand side of the cut point
-        //Determine, by guided search, the candidate vertices for the gene;
-        //If the gene in the corresponding locus from the other parent is amongst candidates, THEN choose it, ELSE place any other candidate gene;
         //C5
         //Repeat step C4 for all loci to the end of the chromosome
         //C6 
@@ -540,8 +608,8 @@ public class Marian {
      * @param leftLocus is the leftLocus of a parent.
      * @return The possible candidates of blocks to be placed
      */
-    public ArrayList<Integer> getPossibleBlocks(ArrayList<Block> leftLocus) {
-        ArrayList<Integer> possibleBlocks = new ArrayList<>();
+    public ArrayList<Block> getPossibleBlocks(ArrayList<Block> leftLocus) {
+        ArrayList<Block> possibleBlocks = new ArrayList<>();
         ArrayList<Integer> bannedBlocks = new ArrayList<>();
 
         //Check for every placed block the blocks on top
@@ -556,7 +624,7 @@ public class Marian {
                                 //Check if the block is placed
                                 if (leftLocus.get(l).getID() == k) {
                                     //Add to posible Blocks
-                                    possibleBlocks.add(j);
+                                    possibleBlocks.add(blockCollection.get(j));
                                     break;
                                 }
                                 //If the block needed block is not placed
@@ -580,7 +648,7 @@ public class Marian {
         //Remove already placed blocks
         for (int i = 0; i < leftLocus.size(); i++) {
             for (int j = 0; j < possibleBlocks.size(); j++) {
-                if (leftLocus.get(i).getID() == possibleBlocks.get(j)) {
+                if (leftLocus.get(i).getID() == possibleBlocks.get(j).getID()) {
                     possibleBlocks.remove(j);
                     break;
                 }
@@ -656,9 +724,6 @@ public class Marian {
         return pop;
     }
 
-        return newPop;
-
-    }
 
     //getFloor
     //  Beschrijving: getFloor returned de floor.
