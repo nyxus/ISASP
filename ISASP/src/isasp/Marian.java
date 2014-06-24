@@ -435,7 +435,8 @@ public class Marian {
     }
 
     public Population crossOver(Population population) {
-        System.out.println(population.toString());
+        System.out.println("- Crossover - ");
+        System.out.println("    "+population.toString());
         
         ArrayList<Chromosome> temppopulation = new ArrayList<>(population.getList());
         ArrayList<Chromosome> parents = new ArrayList<>();
@@ -650,8 +651,8 @@ public class Marian {
             
             
             //Fill the population with the newly created childs
-            childPopulation.addChromosome(new Chromosome(i, parent1LeftLocus));
-            childPopulation.addChromosome(new Chromosome(i+1, parent1LeftLocus));
+            population.addChromosome(new Chromosome(population.getSize(), parent1LeftLocus));
+            population.addChromosome(new Chromosome(population.getSize(), parent2LeftLocus));
             
             //Clear locusses for next use
             parent1LeftLocus.clear();
@@ -661,8 +662,6 @@ public class Marian {
             System.out.println();
         }
         
-        
-
         //C5
         //Repeat step C4 for all loci to the end of the chromosome
         //C6 
@@ -670,9 +669,10 @@ public class Marian {
         //C7
         //Repeat steps C2 - C6 for the remaining pairs of parent chromosomes
         //A population of feasible offspring (Children) chromosomes;     
-        System.out.println(childPopulation.toString());
+        System.out.println("New population of children!");
+        System.out.println(population.toString());
         
-        return childPopulation;
+        return population;
     }
 
     /**
