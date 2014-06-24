@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -742,7 +743,7 @@ public class Marian {
         return possibleBlocks;
     }
 
-    /**
+   /**
      * generates a new population based on fitness of a other population. In
      * general this selection will select the best and some worst Chromosomes
      *
@@ -751,17 +752,29 @@ public class Marian {
      * @param newPopSize The size of the new population
      * @return The new population
      */
-    public Population getSelecetion(Population oldPop, int newPopSize) {
+    private Population getSelecetion(Population oldPop, int newPopSize, ArrayList<Double> selectionRatio) {
         Population newPop = new Population();
+        int selectAmount = 0;
+        double selectRangeMin = 0;
+        double selectRangeMax = 0;
         double prevTotalFtnss = 0;
         PriorityQueue<Double> randFitnss = new PriorityQueue<>();
         Random r = new Random();
+        
         oldPop.sortByFitness();
 
         // Add random doubles to a sored queue
-        // This random doubels will select the Chromosomes based on its fitness
-        for (int i = 0; i < newPopSize; i++) {
-            randFitnss.add((oldPop.getTotalFitness() * r.nextDouble()));
+        // This random doubels will select the Chromosomes based on its fitness     
+        for (double ratio : selectionRatio) {
+           selectAmount =(int)Math.round(((double)newPopSize) * ratio);
+           selectRangeMax +=  oldPop.getTotalFitness() / selectionRatio.size();
+            for (int i = 0; i < selectAmount; i++) {
+               randFitnss.add( selectRangeMin + (selectRangeMax - selectRangeMin) * r.nextDouble() ); 
+            }
+           selectRangeMin = selectRangeMax;
+           if(randFitnss.size() > newPopSize){
+               break;
+           }
         }
 
         /* Loop through all old pouplation and if the fitnss matcheses with 
@@ -787,13 +800,28 @@ public class Marian {
         
     }
     
+    public Population getSelectionMarian(Population oldPop, int newPopSize){
+        ArrayList<Double> ratio = new ArrayList<>();
+        ratio.add(1.0);
+        return getSelecetion(oldPop, newPopSize, ratio);
+    }
+    
+    public Population getSelectionPandG(Population oldPop, int newPopSize){
+        Double[] collection = {0.7,0.2,0.1};
+        ArrayList<Double> ratio = new ArrayList<>(Arrays.asList(collection));
+
+        return getSelecetion(oldPop, newPopSize, ratio);
+    }
+    
+    
+    
     public Population run(Population pop, int popSize){
         int gernerations = 0;
         while(pop.getMax() != pop.getMin()){
-            pop = this.crossover(pop, popSize);
-            pop = this.getSelecetion(pop, popSize);
-            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( (pop.getTotalFitness()/(double)pop.getList().size()) ));
-            gernerations++;
+           pop = this.crossOver(pop);
+           pop = this.getSelectionPandG(pop, popSize);
+           System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( (pop.getTotalFitness()/(double)pop.getList().size()) ));
+           gernerations++;
         }
         return pop;
     }

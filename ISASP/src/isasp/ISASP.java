@@ -32,7 +32,7 @@ public class ISASP {
         Population pop = problem.generatePopulation(popSize);
         problem.run(pop, popSize);
 
-        problem.crossOver(pop);
+        //problem.crossOver(pop);
         
         
         /*Chromosome chr = new Chromosome(0, pop.getList().get(0).GetSelection(0, 6));
