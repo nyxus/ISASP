@@ -28,7 +28,7 @@ public class Chromosome  implements Comparable<Chromosome> {
     }
     public Chromosome(int ID, ArrayList<Block> blocks){
         this.id = ID;
-        this.sequence = blocks;
+        this.sequence.addAll(blocks);
         CalculateSize();
     }
     
