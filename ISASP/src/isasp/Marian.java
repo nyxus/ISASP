@@ -28,6 +28,7 @@ public class Marian {
 
     private Chromosome bestMin;
     private int problemSize;
+    private double mutationPercentage = 2.25;
 
     /**
      * Create a problem to solve with the algorithm of Marian
@@ -800,6 +801,37 @@ public class Marian {
         
     }
     
+   /**
+     * generates a new population based on fitness of a other population. In
+     * general this selection will select the best and some worst Chromosomes
+     *
+     * @param population is the to be mutated population
+     * @return the mutated population
+     */
+    public Population pseudoMutation(Population population){
+        int selection;
+        Random random = new Random();
+        
+        //Calculate the number mutations to be performed
+        double part = (mutationPercentage / 100) * population.getSize();
+        
+        //Get the rounded number of mutations
+        int numberOfMutations = (int) Math.round(part);
+        
+        for(int i = 0; i < numberOfMutations; i++){
+            //Select a random chromosome
+            selection = random.nextInt(population.getSize());
+            
+            //Create a new chromosome
+            Chromosome newChromosome = guidedSearch(population.getChromosome(selection).getId());
+            
+            //set the newly created chromosome at the randomly selected index
+            population.setChromosome(selection, newChromosome);
+        }    
+        
+        return population;
+    }
+    
     public Population getSelectionMarian(Population oldPop, int newPopSize){
         ArrayList<Double> ratio = new ArrayList<>();
         ratio.add(1.0);
@@ -820,6 +852,7 @@ public class Marian {
         while(pop.getMax() != pop.getMin()){
            pop = this.crossOver(pop);
            pop = this.getSelectionPandG(pop, popSize);
+           pop = this.pseudoMutation(pop);
            System.out.println("Gener " + gernerations + ": Max: " + pop.getMax() + "  Min: " + pop.getMin() + "  AVG: " + ( (pop.getTotalFitness()/(double)pop.getList().size()) ));
            gernerations++;
         }

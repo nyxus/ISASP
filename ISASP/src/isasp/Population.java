@@ -120,6 +120,14 @@ public class Population {
     public Chromosome getChromosome(Integer selection) {
         return list.get(selection);
     }
+    /**
+     * @param index is the position of the chromosome to be replaced
+     * @param chromosome is the new chromosome to be put in the list at the index
+     * @author Peter Tielbeek
+     */
+    public void setChromosome(int index, Chromosome chromosome){
+        this.list.set(index, chromosome);
+    }
 
     /**
      * @return the Maximal fitness of this population 

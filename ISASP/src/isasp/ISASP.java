@@ -21,7 +21,7 @@ public class ISASP {
        Block asd2 = new Block(22, 1, 2, 3, 4);
        Block asd3 = new Block(3, 1, 2, 3, 4);
        Block asd4 = new Block(10, 1, 2, 3, 4);
-       int popSize = 50;
+       int popSize = 300;
        
       Block[] blocks = {asd4, asd1, asd2, asd3,  };   
       Chromosome Chms = new Chromosome(1, new ArrayList(Arrays.asList(blocks)));
@@ -31,7 +31,7 @@ public class ISASP {
         Marian problem = new Marian("probleemMet5");
         Population pop = problem.generatePopulation(popSize);
         problem.run(pop, popSize);
-
+//        problem.pseudoMutation(pop);
         //problem.crossOver(pop);
         
         
